@@ -1,5 +1,7 @@
-module EllipseScenGen
+module EllipticalScenGen
 
-# package code goes here
+export aggregate_scenarios
+
+include("ScenarioReduction.jl")
 
 end # module
