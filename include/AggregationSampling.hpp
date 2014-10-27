@@ -22,6 +22,12 @@ public:
   AggregationSampling(MeanCov &norm,
 		      double *cone_A, int num_gen,
 		      double alpha);
+
+  AggregationSampling(std::function< void(double*) > sampler,
+		      MeanCov &norm,
+		      double *cone_A, int num_gen,
+		      double alpha);
+
   /**
    * Copy constructor
    */
@@ -53,7 +59,6 @@ public:
   ScenarioSet operator()(const ScenarioSet &scen_set);
 private:
   std::function< void(double *) > sampler;
-  // MVNormal *sampler;
 };
 
 #endif

@@ -9,22 +9,32 @@ int main() {
 		     0.1, 0.7, 0.3,
 		     0.0, 0.3, 0.5};
   Sigma.reshape(3,3);
+  int num_gen = 3;
   arma::mat cone_A = arma::eye(3,3);
   MeanCov norm(mean, Sigma);
-  double beta = 0.95;
+  MVNormal norm_sampler(norm);
+  double alpha = 1.6448;     //  = \Phi^{-1} (0.95)
   int num_scen = 30;
+
+  std::cout << "Testing armadillo constructor..." << std::endl;
+  AggregationSampling scen_gen_1(norm, cone_A, alpha);
+  ScenarioSet scen_1 = scen_gen_1(num_scen);
+  scen_1.pprint();
+
+  std::cout << "Testing function constructor..." << std::endl;
+  MVNormal normal_sampler(norm);
+  AggregationSampling scen_gen_2(norm_sampler, norm, cone_A.memptr(), num_gen, alpha);
+  ScenarioSet scen_2 = scen_gen_2(num_scen);
+  scen_2.pprint();
   
-  AggregationSampling scen_gen1(norm, cone_A, beta);
-  AggregationSampling scen_gen(scen_gen1);
-  ScenarioSet scen = scen_gen(num_scen);
-  scen.pprint();
-  ScenarioSet scen2 = scen_gen(scen);
-  scen2.pprint();
+  std::cout << "Testing copy constructor..." << std::endl;
+  AggregationSampling scen_gen_3(scen_gen_1);
+  ScenarioSet scen_3 = scen_gen_3(num_scen);
+  scen_3.pprint();
   
-  std::cout << "Agg sampling successful" << std::endl;
-  MVNormal sampler(norm);
-  ScenarioSet ss = rnorm_ScenarioSet(norm, 10);
-  ss.pprint();
-  ScenarioSet scen3 = scen_gen(ss);
-  scen3.pprint();
+  std::cout << "Testing scenario aggregation..." << std::endl;
+  ScenarioSet scen_4 = rnorm_ScenarioSet(norm, num_scen);
+  scen_4.pprint();
+  ScenarioSet scen_5 = scen_gen_1(scen_4);
+  scen_5.pprint();
 }

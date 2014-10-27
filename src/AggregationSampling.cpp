@@ -16,6 +16,14 @@ AggregationSampling::AggregationSampling(MeanCov &norm,
 {}
 
 
+AggregationSampling::AggregationSampling(std::function< void(double*) > sampler,
+					 MeanCov &norm,
+					 double *cone_A, int num_gen,
+					 double alpha)
+  : ScenarioGenerationBase(norm, cone_A, num_gen, alpha), sampler(sampler)
+{}
+
+
 AggregationSampling::AggregationSampling(const AggregationSampling &other) 
   : ScenarioGenerationBase(other),
     sampler(other.sampler)
