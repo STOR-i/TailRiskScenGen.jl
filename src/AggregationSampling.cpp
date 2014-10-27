@@ -2,29 +2,27 @@
 #include "AggregationSampling.hpp"
 
 AggregationSampling::AggregationSampling(MeanCov &norm,
-					       arma::mat cone_A,
-					       double alpha)
+					 arma::mat cone_A,
+					 double alpha)
   : ScenarioGenerationBase(norm, cone_A, alpha),
-    sampler(new MVNormal(norm))
+    sampler(MVNormal(norm))
 {}
 
 AggregationSampling::AggregationSampling(MeanCov &norm,
 					 double *cone_A, int num_gen,
 					 double alpha)
   : ScenarioGenerationBase(norm, cone_A, num_gen, alpha),
-    sampler(new MVNormal(norm))
+    sampler(MVNormal(norm))
 {}
 
 
 AggregationSampling::AggregationSampling(const AggregationSampling &other) 
   : ScenarioGenerationBase(other),
-    sampler(new MVNormal(*(other.sampler)))
+    sampler(other.sampler)
 {}
 
 AggregationSampling::~AggregationSampling()
-{
-  delete sampler;
-}
+{}
 
 ScenarioSet AggregationSampling::operator()(int num_scen)
 {
@@ -38,7 +36,7 @@ ScenarioSet AggregationSampling::operator()(int num_scen)
   double *ptr = scenarios.memptr();
   
   while (non_agg_counter < num_scen - 1) {
-    sampler->operator()(ptr);
+    sampler(ptr);
     y = arma::vec(ptr, dim, false, true);
 
     if (in_agg_region(y)) {
@@ -57,7 +55,7 @@ ScenarioSet AggregationSampling::operator()(int num_scen)
     probs[num_scen-1] = float(agg_counter)/(agg_counter + non_agg_counter);
   }
   else {
-    sampler->operator()(ptr);
+    sampler(ptr);
     ++non_agg_counter;
     for (int s = 0; s < num_scen; ++s) probs[s] = 1.0/num_scen;
   }

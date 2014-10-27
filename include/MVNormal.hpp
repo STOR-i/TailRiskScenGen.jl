@@ -37,7 +37,6 @@ public:
     : mean(other.mean), 
       P(other.P), dim(other.dim)
   {
-    std::cout << "Using copy constructor..." << std::endl;
     system_clock::duration dur = high_resolution_clock::now().time_since_epoch();
     engine.seed(dur.count());
   }
@@ -51,7 +50,6 @@ public:
     arma::vec point(vec, dim, false, true);
     for (int i = 0; i < dim; ++i)
       point[i] = distr(engine);
-    //point.imbue( [&]() { return distr(engine); } );
     point = P * point + mean;
   }
 

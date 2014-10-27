@@ -1,11 +1,10 @@
 #ifndef AGGREGATION_SAMPLING_HPP
 #define AGGREGATION_SAMPLING_HPP
 
+#include <functional>
 #include "MeanCov.hpp"
 #include "ScenarioGenerationBase.hpp"
 #include "ScenarioSet.hpp"
-
-class MVNormal;
 
 /**
  * Provides methods for simple scneario aggregation
@@ -53,7 +52,8 @@ public:
    */
   ScenarioSet operator()(const ScenarioSet &scen_set);
 private:
-  MVNormal *sampler;
+  std::function< void(double *) > sampler;
+  // MVNormal *sampler;
 };
 
 #endif
