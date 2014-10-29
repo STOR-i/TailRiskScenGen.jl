@@ -21,7 +21,7 @@ VPATH = include src bin
 
 LIB_SOURCES := AggregationSampling.cpp ScenarioGenerationBase.cpp
 LIB_SOURCES += ScenarioSet.cpp ConeProjector.cpp MeanCov.cpp
-LIB_SOURCES += LCP_Solver.c
+LIB_SOURCES += LCP_Solver.c LCP_julia.c
 LIB_SOURCES += julia_wrapper.cpp
 
 LDFLAGS+=-ldl
@@ -39,6 +39,9 @@ bin/%.o: %.cpp %.hpp
 	g++ -c $(CXX_FLAGS) $(INC_DIR) $< -o $@
 
 bin/%.o: %.c %.h
+	gcc -c $< $(C_FLAGS) $(INC_DIR) -o $@
+
+bin/%.o: %.c
 	gcc -c $< $(C_FLAGS) $(INC_DIR) -o $@
 
 ###########
