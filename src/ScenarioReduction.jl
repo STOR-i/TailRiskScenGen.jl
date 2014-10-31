@@ -21,3 +21,26 @@ function aggregate_scenarios(scenarios::Array{Float64, 2}, probs::Array{Float64,
                               mean, cov, cone_A, alpha)
     return new_scenarios[:, 1:new_num_scen], new_probs[1:new_num_scen]
 end
+
+function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
+    num_risk::Int64 = 0
+    num_non_risk::Int64 = 0
+    dim, num_scen = size(scenarios)
+    new_scenarios = Array(Float64, dim, num_scen)
+    non_risk_sum = fill(0.0, dim)
+    for s in 1:num_scen
+        if in_RiskRegion(Ω, scenarios[:,s])
+            new_scenarios[:,(num_risk+=1)] = scenarios[:,s]
+        else
+            non_risk_sum += scenarios[:,s]
+            num_non_risk += 1
+        end
+    end
+    new_num_scen = num_risk + 1
+    new_scenarios[:,new_num_scen] = non_risk_sum/num_non_risk
+    new_probs = fill(1.0/(num_risk + num_non_risk), new_num_scen)
+    new_probs[new_num_scen] = num_non_risk/(num_risk + num_non_risk)
+    # Resize array to have appropriate number of scenarios - uses pointer hack
+    new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, new_num_scen))
+    new_scenarios, new_probs
+end

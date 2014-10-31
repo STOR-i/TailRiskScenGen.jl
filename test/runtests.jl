@@ -7,6 +7,9 @@ include("test_FiniteCone.jl")
 print("Running test_RiskRegion.jl...\n")
 include("test_RiskRegion.jl")
 
+print("Running test_scen_gen.jl...\n")
+include("test_scen_gen.jl")
+
 ## # Parameters
 ## mean = [0.1, 0.05]
 ## cov = [[1.0, -0.5] [-0.5, 1.5]]
