@@ -15,7 +15,11 @@ A = rand(Normal(), (dim,dim))
 Σ = A'A
 K = FiniteCone(eye(dim))
 Ω = RiskRegion(μ, Σ, K, 1.96)
-scenarios = rand(MvNormal(μ, Σ), num_scen)
+dist = MvNormal(μ, Σ)
+scenarios = rand(dist, num_scen)
 
 new_scen, new_prob = aggregate_scenarios(scenarios, Ω)
 valid_scenario_set(new_scen, new_prob)
+
+agg_sample_scen, agg_sample_prob = aggregation_sampling(dist, Ω, num_scen)
+valid_scenario_set(agg_sample_scen, agg_sample_prob)
