@@ -9,7 +9,7 @@ LIB_DIR:=
 # Libraries and other flags #
 #############################
 
-LIB:=-larmadillo -lcblas -llapacke
+LIB:= -lcblas
 CXX_FLAGS:=-std=c++11 -g -Wall -fPIC
 C_FLAGS :=-std=c99 -fPIC -Wall
 
@@ -19,24 +19,17 @@ C_FLAGS :=-std=c99 -fPIC -Wall
 
 VPATH = include src bin
 
-LIB_SOURCES := AggregationSampling.cpp ScenarioGenerationBase.cpp
-LIB_SOURCES += ScenarioSet.cpp ConeProjector.cpp MeanCov.cpp
-LIB_SOURCES += LCP_Solver.c LCP_julia.c
-LIB_SOURCES += julia_wrapper.cpp
+LIB_SOURCES := LCP_Solver.c LCP_julia.c
 
 LDFLAGS+=-ldl
 
-LIB_OBJ := $(patsubst %.cpp, bin/%.o, $(LIB_SOURCES))
-LIB_OBJ := $(patsubst %.c, bin/%.o, $(LIB_OBJ))
+LIB_OBJ := $(patsubst %.c, bin/%.o, $(LIB_SOURCES))
 
 bin/libScenGen.so: $(LIB_OBJ)
 	g++ -shared $^ $(LIB) -o $@
 
 bin/libScenGen.a: $(LIB_OBJ)
 	ar rv $@ $?
-
-bin/%.o: %.cpp %.hpp
-	g++ -c $(CXX_FLAGS) $(INC_DIR) $< -o $@
 
 bin/%.o: %.c %.h
 	gcc -c $< $(C_FLAGS) $(INC_DIR) -o $@
@@ -48,20 +41,20 @@ bin/%.o: %.c
 ## Tests ##
 ###########
 
-TEST_DIR := test
-TEST_SOURCES := $(shell find $(TEST_DIR) -type f -name "*.cpp")
-TEST_OBJ := $(patsubst $(TEST_DIR)/test_%.cpp, bin/test_%.o, $(TEST_SOURCES))
-TEST_EXE := $(patsubst $(TEST_DIR)/test_%.cpp, bin/test_%, $(TEST_SOURCES))
+# TEST_DIR := test
+# TEST_SOURCES := $(shell find $(TEST_DIR) -type f -name "*.cpp")
+# TEST_OBJ := $(patsubst $(TEST_DIR)/test_%.cpp, bin/test_%.o, $(TEST_SOURCES))
+# TEST_EXE := $(patsubst $(TEST_DIR)/test_%.cpp, bin/test_%, $(TEST_SOURCES))
 
-$(TEST_OBJ): bin/test_%.o: $(TEST_DIR)/test_%.cpp bin/libScenGen.a
-	g++ -c $(INC_DIR) $(CXX_FLAGS) $< -o $@
+# $(TEST_OBJ): bin/test_%.o: $(TEST_DIR)/test_%.cpp bin/libScenGen.a
+# 	g++ -c $(INC_DIR) $(CXX_FLAGS) $< -o $@
 
-$(TEST_EXE): bin/test_%: bin/test_%.o libScenGen.a
-	g++ $^ $(LIB) $(LDFLAGS) -o $@
+# $(TEST_EXE): bin/test_%: bin/test_%.o libScenGen.a
+# 	g++ $^ $(LIB) $(LDFLAGS) -o $@
 
-.PHONY: test
-test: $(TEST_EXE)
-	$(foreach var, $^, ./$(var);)
+# .PHONY: test
+# test: $(TEST_EXE)
+# 	$(foreach var, $^, ./$(var);)
 
 ###############
 ## Utilities ##
