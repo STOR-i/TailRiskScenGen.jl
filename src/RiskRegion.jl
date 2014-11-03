@@ -6,14 +6,19 @@ type RiskRegion
     α::Float64
     function RiskRegion(μ::Vector{Float64}, Σ::Matrix{Float64},
                         K::FiniteCone, α::Float64)
-        if size(μ) != size(Σ, 1) ArgumentError("μ and Σ must have consistent dimensions") end
+        if length(μ) != size(Σ, 1) ArgumentError("μ and Σ must have consistent dimensions") end
         if !isposdef(Σ) ArgumentError("Σ must be a positive definite matrix") end
+        if K.dim != length(μ) ArgumentError("FiniteCone must have same dimension as mean vector") end
         if α <= 0 ArgumentError("α must be strictly positive") end
         P = chol(Σ)
         inv_P = inv(P)
         new_K = FiniteCone(P*K.A)
         new(μ, Σ, new_K, inv_P, α)
     end
+end
+
+function RiskRegion(dist::MvNormal, d::MvNormal, K::FiniteCone, β::Float64)
+    RiskRegion(dist.μ, d.Σ.mat, K, quantile(Normal(), β))
 end
 
 function transformed_size(Ω::RiskRegion, x::Vector{Float64})
@@ -25,3 +30,4 @@ end
 function in_RiskRegion(Ω::RiskRegion, x::Vector{Float64})
     transformed_size(Ω::RiskRegion, x::Vector{Float64}) >= Ω.α
 end
+
