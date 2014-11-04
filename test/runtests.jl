@@ -7,6 +7,9 @@ include("test_FiniteCone.jl")
 print("Running test_RiskRegion.jl...\n")
 include("test_RiskRegion.jl")
 
+print("Running test_BruteForceRiskRegion.jl...\n")
+include("test_BruteForceRiskRegion.jl")
+
 print("Running test_scen_gen.jl...\n")
 include("test_scen_gen.jl")
 
