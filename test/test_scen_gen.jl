@@ -24,5 +24,8 @@ valid_scenario_set(new_scen, new_prob)
 agg_sample_scen, agg_sample_prob = aggregation_sampling(dist, Ω, num_scen)
 valid_scenario_set(agg_sample_scen, agg_sample_prob)
 
-cluster_scen, cluster_prob = nonrisk_clustering(dist, Ω, 100,10)
-valid_scenario_set(cluster_scen, cluster_prob)
+cluster_sample_scen, cluster_sample_prob = nonrisk_clustering(dist, Ω, 100,10)
+valid_scenario_set(cluster_sample_scen, cluster_sample_prob)
+
+cluster_scen, cluster_probs = nonrisk_clustering(scenarios, Ω, 10)
+valid_scenario_set(cluster_scen, cluster_probs)
