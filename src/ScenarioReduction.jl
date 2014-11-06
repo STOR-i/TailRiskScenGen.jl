@@ -30,8 +30,7 @@ end
 function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion, num_scen::Int64)
     dim = length(dist)
     scenarios = Array(Float64, dim, num_scen)
-
-    non_risk_sum = Array(Float64, dim)
+    non_risk_sum = fill(0.0, dim)
     num_risk = 0
     num_non_risk = 0
     while num_risk + 1 < num_scen
