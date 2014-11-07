@@ -11,7 +11,7 @@ function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::Risk
 
     while r < num_risk
         scen = rand(dist)
-        if in_RiskRegion(Ω, scen)
+        if scen ∈ Ω
             scenarios[:,r+1] = scen
             r += 1
         else
@@ -37,7 +37,7 @@ function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::RiskRegion, num_non_
     nr = 0  # Non-risk scenario counter
     for s in 1:num_scen
         scen = scenarios[:,s]
-        if in_RiskRegion(Ω, scen)
+        if scen ∈ Ω
             new_scenarios[:,r+1] = scen
             r += 1
         else

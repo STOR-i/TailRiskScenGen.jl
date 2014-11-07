@@ -27,7 +27,7 @@ function transformed_size(Ω::RiskRegion, x::Vector{Float64})
     norm(project(Ω.K, y))
 end
 
-function in_RiskRegion(Ω::RiskRegion, x::Vector{Float64})
+function ∈(x::Vector{Float64}, Ω::RiskRegion)
     transformed_size(Ω::RiskRegion, x::Vector{Float64}) >= Ω.α
 end
 

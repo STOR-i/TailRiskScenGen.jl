@@ -1,9 +1,6 @@
 using Cpp
 using Distributions
 
-lib_path =  joinpath(dirname(@__FILE__()), "../bin/libScenGen.so")
-const lib = normpath(lib_path)
-
 function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     num_risk::Int64 = 0
     num_non_risk::Int64 = 0
@@ -11,7 +8,7 @@ function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     new_scenarios = Array(Float64, dim, num_scen)
     non_risk_sum = fill(0.0, dim)
     for s in 1:num_scen
-        if in_RiskRegion(Ω, scenarios[:,s])
+        if scenarios[:,s] ∈ Ω
             new_scenarios[:,(num_risk+=1)] = scenarios[:,s]
         else
             non_risk_sum += scenarios[:,s]
@@ -35,7 +32,7 @@ function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::Ri
     num_non_risk = 0
     while num_risk + 1 < num_scen
         scenarios[:, num_risk + 1] = rand(dist)
-        if in_RiskRegion(Ω, scenarios[:, num_risk + 1])
+        if scenarios[:, num_risk+1] ∈ Ω
             num_risk += 1
         else
             non_risk_sum += scenarios[:, num_risk + 1]

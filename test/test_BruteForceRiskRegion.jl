@@ -28,8 +28,8 @@ K = FiniteCone(eye(dim))
 
 for i in 1:num_points
     y = rand(dist)
-    ellipse_res = in_RiskRegion(Ω_ellipse, y)
-    bf_res = in_RiskRegion(Ω_bf, y)
+    ellipse_res = y ∈ Ω_ellipse
+    bf_res = y ∈ Ω_bf
     if  ellipse_res != bf_res
         println("\tERROR: failed at point ", i, " = ", y)
         println("\tEllipse results = ", ellipse_res)
