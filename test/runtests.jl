@@ -13,6 +13,8 @@ include("test_BruteForceRiskRegion.jl")
 print("Running test_scen_gen.jl...\n")
 include("test_scen_gen.jl")
 
+println("Done tests")
+
 ## # Parameters
 ## mean = [0.1, 0.05]
 ## cov = [[1.0, -0.5] [-0.5, 1.5]]

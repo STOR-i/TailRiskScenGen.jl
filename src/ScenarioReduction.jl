@@ -20,7 +20,7 @@ function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     new_probs = fill(1.0/(num_risk + num_non_risk), new_num_scen)
     new_probs[new_num_scen] = num_non_risk/(num_risk + num_non_risk)
     # Resize array to have appropriate number of scenarios - uses pointer hack
-    new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, new_num_scen))
+    new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, new_num_scen)) # reshape(new_scenarios, (dim, new_num_scen))
     new_scenarios, new_probs
 end
 
