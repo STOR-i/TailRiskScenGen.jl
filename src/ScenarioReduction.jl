@@ -1,4 +1,3 @@
-using Cpp
 using Distributions
 
 function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
