@@ -18,6 +18,11 @@ function BruteForceRiskRegion(dist::MvNormal, K::FiniteCone, β::Float64, lattic
     BruteForceRiskRegion(dist.μ, dist.Σ.mat, K, quantile(Normal(), β), lattice_width)
 end
 
+function BruteForceRiskRegion(dist::MvTDist, K::FiniteCone, β::Float64, lattice_width::Int64 = 100)
+    BruteForceRiskRegion(dist.μ, dist.Σ.mat, K, quantile(TDist(dist.df), β), lattice_width)
+end
+
+
 function ∈(y::Vector{Float64}, Ω::BruteForceRiskRegion)
     for x in Ω.lattice
         if dot(x,y-Ω.μ) >= sqrt(dot(x,Ω.Σ*x)) * Ω.α

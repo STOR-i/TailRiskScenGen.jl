@@ -17,9 +17,9 @@ type RiskRegion
     end
 end
 
-function RiskRegion(dist::MvNormal, K::FiniteCone, β::Float64)
-    RiskRegion(dist.μ, dist.Σ.mat, K, quantile(Normal(), β))
-end
+RiskRegion(dist::MvNormal, K::FiniteCone, β::Float64) = RiskRegion(dist.μ, dist.Σ.mat, K, quantile(Normal(), β))
+RiskRegion(dist::MvTDist, K::FiniteCone, β::Float64) = RiskRegion(dist.μ, dist.Σ.mat, K, quantile(TDist(dist.df), β))
+
 
 function transformed_size(Ω::RiskRegion, x::Vector{Float64})
     x_trans = x - Ω.μ
