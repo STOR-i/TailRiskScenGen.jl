@@ -1,6 +1,5 @@
 type RiskRegion
     μ::Vector{Float64}
-    Σ::Matrix{Float64}
     K::FiniteCone
     inv_P::Matrix{Float64}
     α::Float64
@@ -13,7 +12,7 @@ type RiskRegion
         P = chol(Σ)
         inv_P = inv(P)
         new_K = FiniteCone(P*K.A)
-        new(μ, Σ, new_K, inv_P, α)
+        new(μ, new_K, inv_P, α)
     end
 end
 
