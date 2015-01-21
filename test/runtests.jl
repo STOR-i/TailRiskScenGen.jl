@@ -1,16 +1,19 @@
 using EllipticalScenGen
 using Base.Test
 
-print("Running test_FiniteCone.jl...\n")
+println("Running test_FiniteCone.jl...")
 include("test_FiniteCone.jl")
 
-print("Running test_RiskRegion.jl...\n")
+println("Running test_chernikova.jl...")
+include("test_chernikova.jl")
+
+println("Running test_RiskRegion.jl...")
 include("test_RiskRegion.jl")
 
-print("Running test_BruteForceRiskRegion.jl...\n")
+println("Running test_BruteForceRiskRegion.jl...")
 include("test_BruteForceRiskRegion.jl")
 
-print("Running test_scen_gen.jl...\n")
+println("Running test_scen_gen.jl...")
 include("test_scen_gen.jl")
 
 println("Done tests")
