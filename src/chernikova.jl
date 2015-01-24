@@ -26,24 +26,26 @@ function pprint(mat::ChernMat)
 end
     
 # Main algorithm
-function chernikova(A::Matrix{Float64})
+function chernikova(A::Matrix{Float64}, verbosity::Int = 0)
     mat = ChernMat(A)
     counter = 1
     while true
-        println("Iteration ", counter)
-        println("---------------")
-        pprint(mat)
+        if verbosity > 0
+            println("Iteration ", counter)
+            println("---------------")
+            pprint(mat)
+        end
         (col, p) = leading_col(mat)
         if col == 0
-            println("Generators have been found!")
-            return LHS(mat)
+            if verbosity > 0; println("Generators have been found!"); end;
+            return LHS(mat)'
         elseif p == mat.rows
-            println("Zero is the unique solution")
+            if verbosity > 0; println("Zero is the unique solution"); end;
             return 
         end
         
         # Inspect matrix to find the maximum size of the next
-        println("Using column $(col) which has $(p) negatives")
+        if verbosity > 0; println("Using column $(col) which has $(p) negatives"); end;
         pos, nil, neg = get_pos_neg_indices(mat, col)
         max_rows = length(pos) + length(nil) + length(pos) * length(neg)
         new_B = Array(Float64, max_rows, mat.m + mat.n)
@@ -56,7 +58,7 @@ function chernikova(A::Matrix{Float64})
         # Go through pairs of row with positive and negative
         # coefficients in leading column and combine if necessary
         for i1 in pos, i2 in neg
-            if combinable(mat, i1, i2)
+            if combinable(mat, i1, i2, verbosity - 1)
                 new_rows += 1
                 new_B[new_rows, :] = combine(mat, col, i1, i2)
             end
@@ -65,10 +67,12 @@ function chernikova(A::Matrix{Float64})
         mat.rows = new_rows
         counter += 1
 
-        @printf("Used %d rows with non-negative intersections with leading column\n", length(pos) + length(nil))
-        @printf("Added %d positive combinations of rows out of a possible %d\n",
-                new_rows - length(pos) - length(nil), length(pos) * length(neg))
-        println("------------------------------------------------")
+        if verbosity > 0
+            @printf("Used %d rows with non-negative intersections with leading column\n", length(pos) + length(nil))
+            @printf("Added %d positive combinations of rows out of a possible %d\n",
+                    new_rows - length(pos) - length(nil), length(pos) * length(neg))
+            println("------------------------------------------------")
+        end
     end
 end
 
@@ -98,7 +102,7 @@ function get_pos_neg_indices(mat::ChernMat, col::Int64)
     pos, nil, neg
 end
     
-function combinable(mat::ChernMat, i1::Int64, i2::Int64)
+function combinable(mat::ChernMat, i1::Int64, i2::Int64, verbosity::Int = 0)
     # Find all columns for which the rows have a common zero
     # LHS
     zero_cols = Int[]
@@ -116,11 +120,14 @@ function combinable(mat::ChernMat, i1::Int64, i2::Int64)
             end
         end
     end
-    println("Rows $(i1) and $(i2) have ", length(zero_cols), " permissible common zeros at columns ", zero_cols)
+    if verbosity > 0;
+        println("Rows $(i1) and $(i2) have ", length(zero_cols), " permissible common zeros at columns ", zero_cols);
+    end;
     if length(zero_cols) == 0 return false end
     for i in 1:mat.rows
         if i == i1 || i == i2; continue; end
-        println("\tRow $i - Values of zero cols: ",  mat.B[i,zero_cols])
+        
+        if verbosity > 1; println("\tRow $i - Values of zero cols: ",  mat.B[i,zero_cols]); end;
         if vec(mat.B[i,zero_cols]) == zeros(length(zero_cols))
             return false
         end

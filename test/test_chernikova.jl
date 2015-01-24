@@ -11,11 +11,11 @@ X = chernikova(A)
 # Function which checks anything generated from Chernikova output is in Polyhedral cone
 function test_polyhedral_contains_finite_cone(A::Matrix{Float64}, num_points::Int)
     X = chernikova(A)
-    gens, dim = size(X)
+    dim, gens = size(X)
     dist = Uniform(0.0, 100.0)
     for i in 1:num_points
         λ = rand(dist, gens)
-        @test all(A*X'λ .>= 0.0)
+        @test all(A*(X*λ) .>= 0.0)
     end
 end
 
