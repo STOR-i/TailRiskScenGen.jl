@@ -1,17 +1,17 @@
-type ChernMat
-    B::Matrix{Float64}
+type ChernMat{T<:Real}
+    B::Matrix{T}
     m::Int64     # Number of constraints
     n::Int64     # Dimension
-    rows::Int    # Current number of 
+    rows::Int    # Current number of rows
 end
 
 
-function ChernMat(A::Matrix)
+function ChernMat{T<:Real}(A::Matrix{T})
     m, n = size(A)
-    ChernMat([eye(n) A'], m, n, n)
+    ChernMat([eye(T,n) A'], m, n, n)
 end
 
-function pprint(mat::ChernMat)
+function pprint(mat::ChernMat{Float64})
     @printf("Rows: %7d\n", mat.rows)
     for i in 1:mat.rows
         for j in 1:mat.n
@@ -24,9 +24,24 @@ function pprint(mat::ChernMat)
         print("\n")
     end
 end
-    
+
+function pprint(mat::ChernMat{Int})
+    @printf("Rows: %7d\n", mat.rows)
+    for i in 1:mat.rows
+        for j in 1:mat.n
+            @printf("%6d", mat.B[i,j])
+        end
+        print(" |")
+        for j in mat.n+1:mat.n+mat.m
+            @printf("%6d", mat.B[i,j])
+        end
+        print("\n")
+    end
+end
+
+
 # Main algorithm
-function chernikova(A::Matrix{Float64}, verbosity::Int = 0)
+function chernikova{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
     mat = ChernMat(A)
     counter = 1
     while true
@@ -48,7 +63,7 @@ function chernikova(A::Matrix{Float64}, verbosity::Int = 0)
         if verbosity > 0; println("Using column $(col) which has $(p) negatives"); end;
         pos, nil, neg = get_pos_neg_indices(mat, col)
         max_rows = length(pos) + length(nil) + length(pos) * length(neg)
-        new_B = Array(Float64, max_rows, mat.m + mat.n)
+        new_B = Array(T, max_rows, mat.m + mat.n)
         
         # Add rows with non-negative intersections
         # with leading column to next matrix
@@ -76,7 +91,7 @@ function chernikova(A::Matrix{Float64}, verbosity::Int = 0)
     end
 end
 
-function leading_col(mat::ChernMat)
+function leading_col{T<:Real}(mat::ChernMat{T})
     p = mat.rows
     I = 0
     for i in mat.n+1:mat.n+mat.m
@@ -92,7 +107,7 @@ end
 
 LHS(mat::ChernMat) = mat.B[:, 1:mat.n]
 
-function get_pos_neg_indices(mat::ChernMat, col::Int64)
+function get_pos_neg_indices{T<:Real}(mat::ChernMat{T}, col::Int64)
     pos, nil, neg = Int[],Int[],Int[]
     for k in 1:mat.rows
         if mat.B[k,col] > 0.0; push!(pos, k)
@@ -102,7 +117,7 @@ function get_pos_neg_indices(mat::ChernMat, col::Int64)
     pos, nil, neg
 end
     
-function combinable(mat::ChernMat, i1::Int64, i2::Int64, verbosity::Int = 0)
+function combinable{T<:Real}(mat::ChernMat{T}, i1::Int64, i2::Int64, verbosity::Int = 0)
     # Find all columns for which the rows have a common zero
     # LHS
     zero_cols = Int[]
@@ -135,7 +150,13 @@ function combinable(mat::ChernMat, i1::Int64, i2::Int64, verbosity::Int = 0)
     return true
 end
 
-function combine(mat::ChernMat, col::Int64, i1::Int64, i2::Int64)
+
+function combine{T<:Real}(mat::ChernMat{T}, col::Int, i1::Int, i2::Int)
     a, b = 1.0, -mat.B[i1,col]/mat.B[i2,col]
     return a*mat.B[i1,:] + b*mat.B[i2,:]
+end
+
+function combine(mat::ChernMat{Int}, col::Int, i1::Int, i2::Int)
+    t = lcm(mat.B[i1, col], mat.B[i2, col])
+    return (t/mat.B[i1,col]) * mat.B[i1, :] - (t/mat.B[i2,col]) * mat.B[i2, :]
 end
