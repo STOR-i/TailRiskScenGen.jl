@@ -49,15 +49,17 @@ function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::RiskRegion, num_non_
     if nr > num_non_risk
         cluster_results = kmeans(non_risk_scenarios, num_non_risk)
         new_scenarios[:,(r+1):(r+num_non_risk)] = cluster_results.centers
-        new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, r + num_non_risk))
+        # The following line causes a garbage-collection related bug, so we use something less efficient...
+        # new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, r + num_non_risk))
+        new_scenarios = new_scenarios[:, 1:r + num_non_risk]
         new_probs = Array(Float64, r + num_non_risk)
         new_probs[1:r] = fill(1.0/(r + nr), r)
         new_probs[r+1:r + num_non_risk] = cluster_results.cweights/(r + nr)
     else
         new_scenarios[:,(r+1):(r+nr)] = non_risk_scenarios
-        new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, r + nr))
+        # new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, r + nr)) # Bug
+        new_scenarios = new_scenarios[:, 1:(r+nr)]
         new_probs = fill(1.0/(r+nr))
     end
-
     return new_scenarios, new_probs
 end

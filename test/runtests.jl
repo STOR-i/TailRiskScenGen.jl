@@ -13,8 +13,8 @@ include("test_RiskRegion.jl")
 println("Running test_BruteForceRiskRegion.jl...")
 include("test_BruteForceRiskRegion.jl")
 
-## println("Running test_scen_gen.jl...")
-## include("test_scen_gen.jl")
+println("Running test_scen_gen.jl...")
+include("test_scen_gen.jl")
 
 println("Done tests")
 
