@@ -2,7 +2,9 @@ module EllipticalScenGen
 
 using Distributions
 
-export aggregate_scenarios, FiniteCone, chernikova, lcp_solve, project, RiskRegion, transformed_size, in_RiskRegion, aggregation_sampling, nonrisk_clustering
+import PDMats: dim
+
+export aggregate_scenarios, FiniteCone, chernikova, lcp_solve, project, RiskRegion, transformed_size, in_RiskRegion, aggregation_sampling, nonrisk_clustering, dim
 
 include("LCP_julia.jl")
 include("chernikova.jl")

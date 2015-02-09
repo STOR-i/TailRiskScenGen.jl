@@ -55,3 +55,5 @@ function simplex(N::Int64, n::Int64)
         return points
     end
 end
+
+dim(Ω::BruteForceRiskRegion) = length(Ω.μ)
