@@ -8,6 +8,15 @@ function collinear(a::Array{Float64}, b::Array{Float64}, tol::Float64 = 1e-6)
     return false
 end
 
+# Normalises the columns of a matrix
+function norm_cols{T<:Real}(A::Matrix{T})
+    norm_A = Array(Float64, size(A))
+    for i in 1:size(A,2)
+        norm_A[:, i] = A[:,i]/norm(A[:,i])
+    end
+    return norm_A
+end
+
 type ChernMat{T<:Real}
     B::Matrix{T}
     m::Int64     # Number of constraints
@@ -74,7 +83,7 @@ function chernikova{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
         (col, p) = leading_col(mat)
         if col == 0
             if verbosity > 0; println("Generators have been found!"); end;
-            return LHS(mat)'
+            return norm_cols(LHS(mat)')
         elseif p == mat.rows
             if verbosity > 0; println("Zero is the unique solution"); end;
             return zeros(n)
