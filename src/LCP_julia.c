@@ -13,7 +13,7 @@
  * \return 1 for success and 0 for failure
  */
 int lcp_julia_solve(double *w, double *z, const double *M, const double *q, int n) {
-  int success;
+  int return_code;
   NumericsMatrix mat;
   LinearComplementarityProblem prob;
   SolverOptions options;
@@ -24,7 +24,7 @@ int lcp_julia_solve(double *w, double *z, const double *M, const double *q, int 
   prob.M = &mat;
   prob.q = q;
   prob.size = n;
-  success = (linearComplementarity_driver(&prob, z, w, &options) == 0) ? 1 : 0;
+  return_code = linearComplementarity_driver(&prob, z, w, &options);
   deleteSolverOptions(&options);  
-  return success;
+  return return_code;
 }
