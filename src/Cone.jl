@@ -2,7 +2,7 @@ import Base.length
 
 abstract Cone
 
-type FiniteCone
+type FiniteCone <: Cone
     A::Matrix{Float64}    # Matrix where each column is a cone generator
     AtA::Matrix{Float64}  # Cross-product of cone generator matrix
     num_gen::Int64
@@ -17,7 +17,7 @@ end
 # Dimension of ambient space
 length(cone::FiniteCone) = size(cone.A, 1)
 
-type PolyhedralCone
+type PolyhedralCone <: Cone
     A::Matrix{Float64}
     n::Int   # Dimension
     m::Int   # Number of constraints
