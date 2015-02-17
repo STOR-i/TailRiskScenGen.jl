@@ -10,6 +10,9 @@ include("test_chernikova.jl")
 println("Running test_RiskRegion.jl...")
 include("test_RiskRegion.jl")
 
+println("Running test_PolyhedralCone.jl...")
+include("test_PolyhedralCone.jl")
+
 println("Running test_BruteForceRiskRegion.jl...")
 include("test_BruteForceRiskRegion.jl")
 
