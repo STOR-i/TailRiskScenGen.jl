@@ -1,3 +1,5 @@
+using MathProgBase
+using Gurobi
 import Base.length
 
 abstract Cone
@@ -25,7 +27,8 @@ type PolyhedralCone <: Cone
 end
 
 function project(cone::PolyhedralCone, p::Vector{Float64})
-    res = quadprog(-2.0*p, 2.0*eye(cone.n), cone.A,  '>', zeros(cone.m), fill(-Inf,cone.n), fill(Inf, cone.n))
+    res = quadprog(-2.0*p, 2.0*eye(cone.n), cone.A,  '>', zeros(cone.m), fill(-Inf,cone.n), fill(Inf, cone.n),
+                   GurobiSolver(OutputFlag=0))
     return res.sol
 end
 
