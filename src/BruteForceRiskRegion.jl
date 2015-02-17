@@ -4,6 +4,7 @@ type BruteForceRiskRegion
     lattice::Array{Vector{Float64}}
     α::Float64
     function BruteForceRiskRegion(μ::Vector{Float64}, Σ::Matrix{Float64}, K::FiniteCone, α::Float64, lattice_width::Int64 = 100)
+        checkRiskRegionArgs(μ, Σ, K, α)
         cone_coords = simplex(lattice_width, K.num_gen)
         num_points = length(cone_coords)
         lattice = Array(Vector{Float64}, num_points)

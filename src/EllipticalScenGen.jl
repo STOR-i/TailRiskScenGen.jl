@@ -9,6 +9,7 @@ export aggregate_scenarios, FiniteCone, PolyhedralCone, chernikova, lcp_solve, p
 include("LCP_julia.jl")
 include("chernikova.jl")
 include("Cone.jl")
+include("utilities.jl")
 include("RiskRegion.jl")
 include("nonrisk_clustering.jl")
 include("BruteForceRiskRegion.jl")

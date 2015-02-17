@@ -1,11 +1,3 @@
-function checkRiskRegionArgs(μ::Vector{Float64}, Σ::Matrix{Float64},
-                             K::FiniteCone, α::Float64)
-        if length(μ) != size(Σ, 1) ArgumentError("μ and Σ must have consistent dimensions") end
-        if !isposdef(Σ) ArgumentError("Σ must be a positive definite matrix") end
-        if length(K) != length(μ) ArgumentError("FiniteCone must be in same dimension as mean vector") end
-        if α <= 0 ArgumentError("α must be strictly positive") end
-end
-    
 type RiskRegion
     μ::Vector{Float64}
     K::Cone
