@@ -1,10 +1,14 @@
 module EllipticalScenGen
 
+VERSION < v"0.4-" && using Docile
+
+@document
+
 using Distributions
 
 import PDMats: dim
 
-export aggregate_scenarios, FiniteCone, PolyhedralCone, chernikova, lcp_solve, project, RiskRegion, transformed_size, in_RiskRegion, aggregation_sampling, nonrisk_clustering, dim, cone_from_constraints, quota_cone
+export aggregate_scenarios, Cone, FiniteCone, PolyhedralCone, chernikova, lcp_solve, project, RiskRegion, transformed_size, in_RiskRegion, aggregation_sampling, nonrisk_clustering, dim, cone_from_constraints, quota_cone
 
 include("LCP_julia.jl")
 include("chernikova.jl")

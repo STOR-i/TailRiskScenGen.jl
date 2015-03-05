@@ -1,5 +1,6 @@
 using Distributions
 
+@doc """Reduces a scenario set by aggregating all scenarios outside a specified risk region""" ->
 function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     num_risk::Int64 = 0
     num_non_risk::Int64 = 0
@@ -30,6 +31,7 @@ function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     end
 end
 
+@doc """Constructs scenarios via aggregation sampling for a given distribution and risk region""" ->
 function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion, num_scen::Int64)
     dim = length(dist)
     scenarios = Array(Float64, dim, num_scen)
