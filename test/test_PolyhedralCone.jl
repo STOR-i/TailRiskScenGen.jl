@@ -18,3 +18,5 @@ for i in 1:1000
     x = rand(dist)
     @test_approx_eq_eps project(K_f, x) project(K_p, x) 1e-5
 end
+
+println("success!")

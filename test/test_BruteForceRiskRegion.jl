@@ -3,7 +3,7 @@
 
 using Distributions
 
-function verify_RiskRegion(Ω::RiskRegion, Ω_bf::EllipticalScenGen.BruteForceRiskRegion, n::Int64)
+function verify_RiskRegion(dist::Sampleable, Ω::RiskRegion, Ω_bf::EllipticalScenGen.BruteForceRiskRegion, n::Int64)
     for i in 1:n
         y = rand(dist)
         ellipse_res = y ∈ Ω
@@ -42,7 +42,7 @@ K = FiniteCone(eye(dim))
 Ω_ellipse = RiskRegion(dist, K, β)
 Ω_bf = EllipticalScenGen.BruteForceRiskRegion(dist, K, β, lattice_width)
 
-verify_RiskRegion(Ω_ellipse, Ω_bf, num_points)
+verify_RiskRegion(dist, Ω_ellipse, Ω_bf, num_points)
 
 print("success\n")
 
@@ -66,7 +66,7 @@ K = FiniteCone(eye(dim))
 Ω_ellipse = RiskRegion(dist, K, β)
 Ω_bf = EllipticalScenGen.BruteForceRiskRegion(dist, K, β, lattice_width)
 
-verify_RiskRegion(Ω_ellipse, Ω_bf, num_points)
+verify_RiskRegion(dist, Ω_ellipse, Ω_bf, num_points)
 print("success\n")
 # println("μ = ", μ)
 # println("Σ = \n", Σ)
