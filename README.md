@@ -8,11 +8,15 @@ The author can provide a draft paper with more details.
 
 The risk region for our class of problems have the following form:
 
-![Basic form of risk regions](/docs/riskregion1.pdf?raw=true "Formula for risk regions")
+![Basic form of risk regions](https://bitbucket.org/fairbrot/ellipticalscengen.jl/raw/master/docs/riskregion1.png "Formula for risk regions")
 
 Given this formulation It is difficult to test whether a scenario `y` is in the risk region. When `K` is a convex cone, the above expression can be rewritten as follows:
 
-![Nice form of risk regions](/docs/riskregion2.pdf?raw=true "Nice formula for risk regions")
+![Nice form of risk regions](https://bitbucket.org/fairbrot/ellipticalscengen.jl/raw/master/docs/riskregion2.png "Nice formula for risk regions")
+
+where `K' = PK`.
+
+The construction of a risk region requires four parameters: a vector μ, a positive definite matrix Σ=PᵀP, a convex cone K and positive scalar α.
 
 # Acknowledgements
 
