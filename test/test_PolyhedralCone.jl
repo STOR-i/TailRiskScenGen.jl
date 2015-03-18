@@ -16,7 +16,7 @@ K_p = RiskRegion(dist, PolyhedralCone(eye(2)), 0.95).K
 
 for i in 1:1000
     x = rand(dist)
-    @test_approx_eq_eps project(K_f, x) project(K_p, x) 1e-5
+    @test_approx_eq_eps project(K_f, x) project(K_p, x) 1e-4
 end
 
 println("success!")

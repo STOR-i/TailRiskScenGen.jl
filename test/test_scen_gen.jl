@@ -8,14 +8,14 @@ function valid_scenario_set(scenarios::Matrix{Float64}, probs::Vector{Float64})
     end
 end
 
-dim = 10
+d = 15
 num_scen = 1000
-μ = rand(Normal(), dim)
-A = rand(Normal(), (dim,dim))
+μ = rand(Normal(), d)
+A = rand(Normal(), (d,d))
 Σ = A'A
-K = FiniteCone(eye(dim))
-Ω = RiskRegion(μ, Σ, K, 1.96)
+K = FiniteCone(-eye(d))
 dist = MvNormal(μ, Σ)
+Ω = RiskRegion(dist, K, 0.95)
 scenarios = rand(dist, num_scen)
 
 new_scen, new_prob = aggregate_scenarios(scenarios, Ω)
