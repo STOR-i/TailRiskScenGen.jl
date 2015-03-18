@@ -6,7 +6,7 @@ function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     num_non_risk::Int64 = 0
     dim, num_scen = size(scenarios)
     new_scenarios = Array(Float64, dim, num_scen)
-    non_risk_sum = fill(0.0, dim)
+    non_risk_sum = zeros(dim)
     for s in 1:num_scen
         if scenarios[:,s] ∈ Ω
             new_scenarios[:,(num_risk+=1)] = scenarios[:,s]
@@ -31,8 +31,7 @@ function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     end
 end
 
-@doc """Constructs scenarios via aggregation sampling for a given distribution and risk region""" ->
-function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion, num_scen::Int64)
+function _aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion, num_scen::Int64)
     dim = length(dist)
     scenarios = Array(Float64, dim, num_scen)
     non_risk_sum = fill(0.0, dim)
@@ -50,5 +49,15 @@ function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::Ri
     scenarios[:,num_scen] = non_risk_sum/num_non_risk
     probs = fill(1.0/(num_risk + num_non_risk), num_scen)
     probs[num_scen] = num_non_risk/(num_risk + num_non_risk)
-    scenarios, probs
+    results = Dict()
+    results["scenarios"] = scenarios
+    results["probs"] = probs
+    results["num_sampled"] = num_risk + num_non_risk
+    results
+end
+
+@doc """Constructs scenarios via aggregation sampling for a given distribution and risk region""" ->
+function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion, num_scen::Int64)
+    results = _aggregation_sampling(dist, Ω, num_scen)
+    results["scenarios"], results["probs"]
 end
