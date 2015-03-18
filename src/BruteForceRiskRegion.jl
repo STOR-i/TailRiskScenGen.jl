@@ -9,7 +9,7 @@ type BruteForceRiskRegion
         num_points = length(cone_coords)
         lattice = Array(Vector{Float64}, num_points)
         for (i,p) in enumerate(cone_coords)
-            lattice[i] = K.A*p
+            lattice[i] = -K.A*p
         end
         return new(μ, Σ, lattice, α)
     end

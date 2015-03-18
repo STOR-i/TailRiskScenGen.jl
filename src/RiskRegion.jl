@@ -8,7 +8,7 @@ type RiskRegion
         checkRiskRegionArgs(μ, Σ, K, α)
         P = chol(Σ)
         inv_P = inv(P)
-        new_K = FiniteCone(P*K.A)
+        new_K = FiniteCone(P*(-K.A))
         new(μ, new_K, inv_P, α)
     end
 
@@ -17,7 +17,7 @@ type RiskRegion
         checkRiskRegionArgs(μ, Σ, K, α)
         P = chol(Σ)
         inv_P = inv(P)
-        new_K = PolyhedralCone(K.A * inv_P)
+        new_K = PolyhedralCone((-K.A) * inv_P)
         new(μ, new_K, inv_P, α)
     end
 end
