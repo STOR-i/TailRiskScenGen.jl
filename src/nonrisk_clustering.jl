@@ -1,5 +1,3 @@
-using Clustering
-
 function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion,
                             num_risk::Int64, num_non_risk::Int64)
     max_non_risk = (num_risk + num_non_risk) * 10

@@ -1,5 +1,3 @@
-using Distributions
-
 @doc """Reduces a scenario set by aggregating all scenarios outside a specified risk region""" ->
 function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     num_risk::Int64 = 0

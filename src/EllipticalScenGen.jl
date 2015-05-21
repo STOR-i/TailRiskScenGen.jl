@@ -5,6 +5,9 @@ VERSION < v"0.4-" && using Docile
 @document
 
 using Distributions
+using MathProgBase
+using Gurobi
+using Clustering
 
 import PDMats: dim
 

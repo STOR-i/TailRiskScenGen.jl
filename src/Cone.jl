@@ -1,5 +1,3 @@
-using MathProgBase
-using Gurobi
 import Base.length
 
 abstract Cone
