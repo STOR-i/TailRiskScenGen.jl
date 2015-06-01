@@ -4,7 +4,7 @@ VERSION < v"0.4-" && using Docile
 
 @document
 
-using Distributions
+using Distributions, SkewDist
 using MathProgBase
 using Gurobi
 using Clustering
