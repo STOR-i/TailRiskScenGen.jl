@@ -2,6 +2,16 @@ import Base.length
 
 abstract Cone
 
+@doc """
+# Description
+Type representing a finitely generated cone. This is the positive
+hull of a finite collection of vectors a₁, … , aₙ:
+
+{ ∑ λᵢ xᵢ : λ ≥ 0 }
+
+# Arguments
+`A::Matrix{Float64}`: Matrix of cone generators, where each column corresponds to a generator
+""" ->
 type FiniteCone <: Cone
     A::Matrix{Float64}    # Matrix where each column is a cone generator
     AtA::Matrix{Float64}  # Cross-product of cone generator matrix
@@ -17,6 +27,16 @@ end
 # Dimension of ambient space
 length(cone::FiniteCone) = size(cone.A, 1)
 
+@doc """
+# Description
+Type representing a Polyhedra cone. This is the
+intersection of a finite collection of half-spaces
+
+{x : aᵢ x ≥ 0 ∀ i} = { x: Ax ≥ 0 }
+
+# Arguments
+`A::Matrix{Float64}`: Constraint matrix of polyhedral cone
+""" ->
 type PolyhedralCone <: Cone
     A::Matrix{Float64}
     n::Int   # Dimension
