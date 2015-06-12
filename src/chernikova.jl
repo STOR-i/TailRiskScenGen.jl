@@ -17,6 +17,15 @@ function norm_cols{T<:Real}(A::Matrix{T})
     return norm_A
 end
 
+# Normalises the columns of a matrix
+function norm_cols(A::Matrix{Int})
+    norm_A = copy(A)
+    for i in 1:size(A,2)
+        if (g = gcd(A[:,i])) > 1; broadcast!(div, norm_A[:, i], norm_A[:, i], g); end
+    end
+    return norm_A
+end
+
 type ChernMat{T<:Real}
     B::Matrix{T}
     m::Int64     # Number of constraints
@@ -206,6 +215,6 @@ end
 
 function combine(mat::ChernMat{Int}, col::Int, i1::Int, i2::Int)
     t = lcm(mat.B[i1, col], mat.B[i2, col])
-    return (t/mat.B[i1,col]) * mat.B[i1, :] - (t/mat.B[i2,col]) * mat.B[i2, :]
+    return div(t,mat.B[i1,col]) * mat.B[i1, :] - div(t,mat.B[i2,col]) * mat.B[i2, :]
 end
 
