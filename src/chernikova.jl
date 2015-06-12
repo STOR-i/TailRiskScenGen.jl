@@ -53,7 +53,7 @@ function pprint(mat::ChernMat{Float64})
 end
 
 function pprint(mat::ChernMat{Int})
-    @printf("Rows: %7d\n", mat.rows)
+    @printf("# Rays: %7d\n", mat.rows)
     for i in 1:mat.rows
         for j in 1:mat.n
             @printf("%6d", mat.B[i,j])
@@ -66,22 +66,8 @@ function pprint(mat::ChernMat{Int})
     end
 end
 
-
-# Main algorithm
-# Calculates the finite generators of the cone formed
-# by the intersection of a polyhedral cone and the positive
-# quadrant; that is the cone formed by the positive solutions
-# of the following problem:
-#    Ax >= 0
-#
-#
-# This is solved by Chernikova's algorithm:
-# "Algorithm for finding a general formula for the non-negative
-# solutions of linear inequalities" by N.V. Chernikova (1964)
-#
-# Returns a matrix whose columns are the required cone generators
-function chernikova{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
-    mat = ChernMat(A)
+function chernikova{T<:Real}(mat::ChernMat{T}, verbosity::Int = 0)
+    m, n = mat.m, mat.n
     counter = 1
     while true
         if verbosity > 0
@@ -99,8 +85,13 @@ function chernikova{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
         end
         
         # Inspect matrix to find the maximum size of the next
-        if verbosity > 0; println("Using column $(col) which has $(p) negatives"); end;
+        #if verbosity > 0; println("Using column $(col) which has $(p) negatives"); end;
         pos, nil, neg = get_pos_neg_indices(mat, col)
+        if verbosity > 0
+            println("Adding constraint $(col) which is currently violated by $(length(neg)) of $(mat.rows) extremal rays")
+            println("New basis will consist of a maximum of $(mat.rows) - $(length(neg)) + $(length(pos)) * $(length(neg)) = $(mat.rows - length(neg) + length(pos)*length(neg)) extremal rays")
+        end;
+        
         max_rows = length(pos) + length(nil) + length(pos) * length(neg)
         new_B = Array(T, max_rows, mat.m + mat.n)
 
@@ -140,12 +131,30 @@ function chernikova{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
         counter += 1
 
         if verbosity > 0
-            @printf("Used %d rows with non-negative intersections with leading column\n", length(pos) + length(nil))
-            @printf("Added %d positive combinations of rows out of a possible %d\n",
+            @printf("Added %d / %d positive combinations of extremal rays\n",
                     new_rows - length(pos) - length(nil), length(pos) * length(neg))
             println("------------------------------------------------")
         end
     end
+end    
+
+
+# Main algorithm
+# Calculates the finite generators of the cone formed
+# by the intersection of a polyhedral cone and the positive
+# quadrant; that is the cone formed by the positive solutions
+# of the following problem:
+#    Ax >= 0
+#
+#
+# This is solved by Chernikova's algorithm:
+# "Algorithm for finding a general formula for the non-negative
+# solutions of linear inequalities" by N.V. Chernikova (1964)
+#
+# Returns a matrix whose columns are the required cone generators
+function chernikova{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
+    mat = ChernMat(A)
+    chernikova(mat, verbosity)
 end
 
 function leading_col{T<:Real}(mat::ChernMat{T})
@@ -192,18 +201,28 @@ function combinable{T<:Real}(mat::ChernMat{T}, i1::Int64, i2::Int64, verbosity::
             end
         end
     end
+    
+    if length(zero_cols) == 0
+        if verbosity > 0; println("Rays $(i1) and $(i2) saturate no common constraint - they do not combine to form a new extremal ray") end
+        return false
+    end
+        
     if verbosity > 0;
-        println("Rows $(i1) and $(i2) have ", length(zero_cols), " permissible common zeros at columns ", zero_cols);
+        println("Rays $(i1) and $(i2) have ", length(zero_cols), " are both saturated by constraints ", zero_cols);
     end;
-    if length(zero_cols) == 0 return false end
+    
     for i in 1:mat.rows
         if i == i1 || i == i2; continue; end
         
-        if verbosity > 1; println("\tRow $i - Values of zero cols: ",  mat.B[i,zero_cols]); end;
+        if verbosity > 1; println("\tRay $i - values on saturated constraints: ",  mat.B[i,zero_cols]); end;
         if vec(mat.B[i,zero_cols]) == zeros(length(zero_cols))
+            if verbosity > 0; println("\tRay $i saturates all saturated constraints of these rays so do not combine") end;
             return false
         end
     end
+    if verbosity > 0;
+        println("\tNo other ray saturates the common saturated constraints of these rays so combine to form a new extreme ray")
+    end;
     return true
 end
 
