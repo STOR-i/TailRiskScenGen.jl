@@ -1,5 +1,5 @@
 # Tests whether two vectors are collinear within a certain tolerance
-function collinear(a::Array{Float64}, b::Array{Float64}, tol::Float64 = 1e-6)
+function collinear{T<:Real}(a::Array{T}, b::Array{T}, tol::T = 1e-6)
     length(a) == length(b) || error("Input arrays must have the same dimenisions")
     size_a, size_b = norm(a), norm(b)
     if size_a == 0.0 || size_b == 0.0; error("Input vectors must be non-zero"); end
@@ -7,6 +7,14 @@ function collinear(a::Array{Float64}, b::Array{Float64}, tol::Float64 = 1e-6)
     if norm(a_n - b_n) < tol || norm(a_n + b_n) < tol; return true end;
     return false
 end
+
+function collinear(a::Array{Int}, b::Array{Int})
+    length(a) == length(b) || error("Input arrays must have the same dimenisions")
+    a_n, b_n = a/gcd(a), b/gcd(b)
+    if a_n==b_n || a_n==-b_n; return true; end
+    return false
+end
+
 
 # Normalises the columns of a matrix
 function norm_cols{T<:Real}(A::Matrix{T})
@@ -21,7 +29,7 @@ end
 function norm_cols(A::Matrix{Int})
     norm_A = copy(A)
     for i in 1:size(A,2)
-        if (g = gcd(A[:,i])) > 1; broadcast!(div, norm_A[:, i], norm_A[:, i], g); end
+        if (g = gcd(A[:,i])) > 1; norm_A[:, i] = broadcast(div, norm_A[:, i], g); end
     end
     return norm_A
 end
@@ -33,6 +41,28 @@ type ChernMat{T<:Real}
     rows::Int    # Current number of rows
 end
 
+function remove_row{T<:Real}(A::Matrix{T}, k::Int)
+    m, n = size(A)
+    B = Array(T, m - 1, n)
+    i = 1
+    for j in 1:m
+        if j != k
+            B[i,:] = A[j,:]
+            i+=1
+        end
+    end
+    return B
+end
+
+function add_row{T<:Real}(A::Matrix{T}, a::Matrix{T})
+    # Here a is a row vector
+    m, n = size(A)
+    B = Array(T, m+1, n)
+    B[1:m, 1:n] = A
+    B[m+1, :] = a
+    return B
+end
+   
 function ChernMat{T<:Real}(A::Matrix{T})
     m, n = size(A)
     ChernMat([eye(T,n) A'], m, n, n)
@@ -87,6 +117,7 @@ function chernikova{T<:Real}(mat::ChernMat{T}, verbosity::Int = 0)
         # Inspect matrix to find the maximum size of the next
         #if verbosity > 0; println("Using column $(col) which has $(p) negatives"); end;
         pos, nil, neg = get_pos_neg_indices(mat, col)
+        
         if verbosity > 0
             println("Adding constraint $(col) which is currently violated by $(length(neg)) of $(mat.rows) extremal rays")
             println("New basis will consist of a maximum of $(mat.rows) - $(length(neg)) + $(length(pos)) * $(length(neg)) = $(mat.rows - length(neg) + length(pos)*length(neg)) extremal rays")
@@ -100,9 +131,9 @@ function chernikova{T<:Real}(mat::ChernMat{T}, verbosity::Int = 0)
         if mat.rows == 2
             if verbosity > 0; println("Handling two row case..."); end;
             new_B[1,:] = mat.B[pos[1],:]
-            new_row = combine(mat, col, pos[1], neg[1])
+            new_row = combine(mat.B, col, pos[1], neg[1])
             if verbosity > 1; println("Candidate row: ", new_row); end;
-            if !collinear(mat.B[pos[1],:], new_row)
+            if !collinear(vec(mat.B[pos[1],:]), vec(new_row))
                 new_B[2,:] = new_row
                 mat.rows = 2
                 mat.B = new_B
@@ -123,7 +154,7 @@ function chernikova{T<:Real}(mat::ChernMat{T}, verbosity::Int = 0)
         for i1 in pos, i2 in neg
             if combinable(mat, i1, i2, verbosity - 1)
                 new_rows += 1
-                new_B[new_rows, :] = combine(mat, col, i1, i2)
+                new_B[new_rows, :] = combine(mat.B, col, i1, i2)
             end
         end
         mat.B = new_B[1:new_rows,:]
@@ -136,7 +167,7 @@ function chernikova{T<:Real}(mat::ChernMat{T}, verbosity::Int = 0)
             println("------------------------------------------------")
         end
     end
-end    
+end
 
 
 # Main algorithm
@@ -226,14 +257,26 @@ function combinable{T<:Real}(mat::ChernMat{T}, i1::Int64, i2::Int64, verbosity::
     return true
 end
 
+function combine{T<:Real}(col::Int, vec1::Vector{T}, vec2::Vector{T})
+    a, b = 1.0, -vec1[col]/vec2[col]
+    return a*vec1 + b*vec2
+end
+    
 
-function combine{T<:Real}(mat::ChernMat{T}, col::Int, i1::Int, i2::Int)
-    a, b = 1.0, -mat.B[i1,col]/mat.B[i2,col]
-    return a*mat.B[i1,:] + b*mat.B[i2,:]
+function combine{T<:Real}(mat::Matrix{T}, col::Int, i1::Int, i2::Int)
+    a, b = 1.0, -mat[i1,col]/mat[i2,col]
+    return a*mat[i1,:] + b*mat[i2,:]
 end
 
-function combine(mat::ChernMat{Int}, col::Int, i1::Int, i2::Int)
-    t = lcm(mat.B[i1, col], mat.B[i2, col])
-    return div(t,mat.B[i1,col]) * mat.B[i1, :] - div(t,mat.B[i2,col]) * mat.B[i2, :]
+
+function combine(mat::Matrix{Int}, col::Int, i1::Int, i2::Int)
+    t = gcd(mat[i1, col], mat[i2, col])
+    a1, a2 = div(mat[i1, col],t), div(mat[i2, col],t)
+    return a1 * mat[i2,:] - a2 * mat[i1,:] 
 end
 
+function combine(col::Int, vec1::Vector{Int}, vec2::Vector{Int})
+    t = gcd(vec1[col], vec2[col])
+    a1, a2 = div(vec1[col],t), div(vec2[col],t)
+    return a1 * vec2 - a2 * vec1
+end

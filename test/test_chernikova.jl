@@ -8,7 +8,11 @@ A = [[3.0 -4.0 1.0 0.0],
 
 B = convert(Matrix{Int}, A)
 
-#X = chernikova(A)
+## m, n = size(B)
+## S = [[eye(eltype(B), n) B'], [-eye(eltype(B), n) -B']]
+## ChernMat = EllipticalScenGen.ChernMat
+## mat = ChernMat(S, m, n, 2*n)
+## chernikova(mat, 1)
 
 # Function which checks anything generated from Chernikova output is in Polyhedral cone
 function test_polyhedral_contains_finite_cone(A::Matrix, num_points::Int)
