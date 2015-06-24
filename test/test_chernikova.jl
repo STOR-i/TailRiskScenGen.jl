@@ -14,6 +14,12 @@ B = convert(Matrix{Int}, A)
 ## mat = ChernMat(S, m, n, 2*n)
 ## chernikova(mat, 1)
 
+using EllipticalScenGen
+q = ones(6)
+K = quota_cone(q)
+A = int(K.A)
+chernikova_general(A, 2)
+
 # Function which checks anything generated from Chernikova output is in Polyhedral cone
 function test_polyhedral_contains_finite_cone(A::Matrix, num_points::Int)
     X = chernikova(A)

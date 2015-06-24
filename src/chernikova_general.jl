@@ -1,9 +1,25 @@
+function redundant_constraint_check{T<:Real}(mat::ChernMat{T}, k::Int, verbosity::Int = 0)
+    zeros = find(x->x==0, mat.B[:, k+mat.n])
+    red_rows = IntSet()
+    for i in 1:k-1
+        zs = find(x->x==0, mat.B[:, i+mat.n])
+        if issubset(zs, zeros) && length(setdiff(zeros, zs)) > 0
+            push!(red_rows, i)
+        elseif issubset(zeros, zs) && length(setdiff(zs, zeros))
+            push!(red_rows, k)
+            break
+        end
+    end
+    return red_rows
+end
+
 function chernikova_general{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
     # Initialisation
     m, n = size(A)
     bidray = ChernMat(A)
     uniray = ChernMat(Array(T, 0, m+n), m, n, 0)
 
+    redundant_rows=IntSet()
     
     for k in 1:m
         if verbosity > 0
@@ -50,13 +66,29 @@ function chernikova_general{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
             uniray.rows += 1
         else
             if verbosity > 0
-                println("All bidrectional rays are saturated by constraint $(k)")
+                println("All bidirectional rays are saturated by constraint $(k)")
             end
             
             pos, nil, neg = get_pos_neg_indices(uniray, k+n)
             if verbosity > 1
                 println("pos, nil, neg: $(pos), $(nil), $(neg)")
             end
+
+            if length(neg) == 0
+                if verbosity > 0
+                    println("Constraint $k is violated by no bidirectional or unidirectional rays so is redundant")
+                end
+                push!(redundant_rows, k)
+                continue
+            end
+
+            if length(pos) + length(nil) == 0
+                if verbosity > 0
+                    println("Constraint $k violates all bidirectional and unidirectional rays so Cone is zero set")
+                end
+                return zeros(n)
+            end
+            
             if verbosity > 0
                 println("Adding constraint $(k) which is currently violated by $(length(neg)) of $(uniray.rows) extremal rays")
                 println("New unidirectional basis will consist of a maximum of $(uniray.rows) - $(length(neg)) + $(length(pos)) * $(length(neg)) = $(uniray.rows - length(neg) + length(pos)*length(neg)) extremal rays")
@@ -105,6 +137,15 @@ function chernikova_general{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
                 println("------------------------------------------------")
             end
         end
+        union!(redundant_rows, redundant_constraint_check(uniray,k, verbosity))
     end
-    return norm_cols(LHS(bidray)'), norm_cols(LHS(uniray)')
+    if verbosity > 0
+        println("Result")
+        println("---------------")
+        println("Bidirectional rays")
+        pprint(bidray)
+        println("Unidirectional rays")
+        pprint(uniray)
+    end
+    return norm_cols(LHS(bidray)'), norm_cols(LHS(uniray)'), redundant_rows
 end
