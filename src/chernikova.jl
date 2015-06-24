@@ -1,28 +1,8 @@
-# Tests whether two vectors are collinear within a certain tolerance
-function collinear{T<:Real}(a::Array{T}, b::Array{T}, tol::T = 1e-6)
-    length(a) == length(b) || error("Input arrays must have the same dimenisions")
-    size_a, size_b = norm(a), norm(b)
-    if size_a == 0.0 || size_b == 0.0; error("Input vectors must be non-zero"); end
-    a_n, b_n = a/norm(a), b/norm(b)
-    if norm(a_n - b_n) < tol || norm(a_n + b_n) < tol; return true end;
-    return false
-end
-
 function collinear(a::Array{Int}, b::Array{Int})
     length(a) == length(b) || error("Input arrays must have the same dimenisions")
     a_n, b_n = a/gcd(a), b/gcd(b)
     if a_n==b_n || a_n==-b_n; return true; end
     return false
-end
-
-
-# Normalises the columns of a matrix
-function norm_cols{T<:Real}(A::Matrix{T})
-    norm_A = Array(Float64, size(A))
-    for i in 1:size(A,2)
-        norm_A[:, i] = A[:,i]/norm(A[:,i])
-    end
-    return norm_A
 end
 
 # Normalises the columns of a matrix
@@ -34,14 +14,19 @@ function norm_cols(A::Matrix{Int})
     return norm_A
 end
 
-type ChernMat{T<:Real}
+type ChernMat{T<:Integer}
     B::Matrix{T}
     m::Int64     # Number of constraints
     n::Int64     # Dimension
     rows::Int    # Current number of rows
 end
 
-function remove_row{T<:Real}(A::Matrix{T}, k::Int)
+function ChernMat{T<:Integer}(A::Matrix{T})
+    m, n = size(A)
+    ChernMat([eye(T,n) A'], m, n, n)
+end
+
+function remove_row{T<:Integer}(A::Matrix{T}, k::Int)
     m, n = size(A)
     B = Array(T, m - 1, n)
     i = 1
@@ -54,7 +39,7 @@ function remove_row{T<:Real}(A::Matrix{T}, k::Int)
     return B
 end
 
-function add_row{T<:Real}(A::Matrix{T}, a::Matrix{T})
+function add_row{T<:Integer}(A::Matrix{T}, a::Matrix{T})
     # Here a is a row vector
     m, n = size(A)
     B = Array(T, m+1, n)
@@ -62,27 +47,8 @@ function add_row{T<:Real}(A::Matrix{T}, a::Matrix{T})
     B[m+1, :] = a
     return B
 end
-   
-function ChernMat{T<:Real}(A::Matrix{T})
-    m, n = size(A)
-    ChernMat([eye(T,n) A'], m, n, n)
-end
 
-function pprint(mat::ChernMat{Float64})
-    @printf("Rows: %7d\n", mat.rows)
-    for i in 1:mat.rows
-        for j in 1:mat.n
-            @printf("%7.3f", mat.B[i,j])
-        end
-        print(" |")
-        for j in mat.n+1:mat.n+mat.m
-            @printf("%7.3f", mat.B[i,j])
-        end
-        print("\n")
-    end
-end
-
-function pprint(mat::ChernMat{Int})
+function pprint(mat::ChernMat)
     @printf("# Rays: %7d\n", mat.rows)
     for i in 1:mat.rows
         for j in 1:mat.n
@@ -96,7 +62,7 @@ function pprint(mat::ChernMat{Int})
     end
 end
 
-function chernikova{T<:Real}(mat::ChernMat{T}, verbosity::Int = 0)
+function chernikova{T<:Integer}(mat::ChernMat{T}, verbosity::Int = 0)
     m, n = mat.m, mat.n
     counter = 1
     while true
@@ -183,12 +149,12 @@ end
 # solutions of linear inequalities" by N.V. Chernikova (1964)
 #
 # Returns a matrix whose columns are the required cone generators
-function chernikova{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
+function chernikova{T<:Integer}(A::Matrix{T}, verbosity::Int = 0)
     mat = ChernMat(A)
     chernikova(mat, verbosity)
 end
 
-function leading_col{T<:Real}(mat::ChernMat{T})
+function leading_col{T<:Integer}(mat::ChernMat{T})
     p = mat.rows
     I = 0
     for i in mat.n+1:mat.n+mat.m
@@ -204,7 +170,7 @@ end
 
 LHS(mat::ChernMat) = mat.B[:, 1:mat.n]
 
-function get_pos_neg_indices{T<:Real}(mat::ChernMat{T}, col::Int64)
+function get_pos_neg_indices{T<:Integer}(mat::ChernMat{T}, col::Int64)
     pos, nil, neg = Int[],Int[],Int[]
     for k in 1:mat.rows
         if mat.B[k,col] > 0.0; push!(pos, k)
@@ -214,7 +180,7 @@ function get_pos_neg_indices{T<:Real}(mat::ChernMat{T}, col::Int64)
     pos, nil, neg
 end
     
-function combinable{T<:Real}(mat::ChernMat{T}, i1::Int64, i2::Int64, verbosity::Int = 0)
+function combinable{T<:Integer}(mat::ChernMat{T}, i1::Int64, i2::Int64, verbosity::Int = 0)
     # Find all columns for which the rows have a common zero
     # LHS
     zero_cols = Int[]
@@ -257,25 +223,18 @@ function combinable{T<:Real}(mat::ChernMat{T}, i1::Int64, i2::Int64, verbosity::
     return true
 end
 
-function combine{T<:Real}(col::Int, vec1::Vector{T}, vec2::Vector{T})
-    a, b = 1.0, -vec1[col]/vec2[col]
-    return a*vec1 + b*vec2
-end
-    
-
-function combine{T<:Real}(mat::Matrix{T}, col::Int, i1::Int, i2::Int)
+function combine{T<:Integer}(mat::Matrix{T}, col::Int, i1::Int, i2::Int)
     a, b = 1.0, -mat[i1,col]/mat[i2,col]
     return a*mat[i1,:] + b*mat[i2,:]
 end
 
-
-function combine(mat::Matrix{Int}, col::Int, i1::Int, i2::Int)
+function combine{T<:Integer}(mat::Matrix{T}, col::Int, i1::Int, i2::Int)
     t = gcd(mat[i1, col], mat[i2, col])
     a1, a2 = div(mat[i1, col],t), div(mat[i2, col],t)
     return a1 * mat[i2,:] - a2 * mat[i1,:] 
 end
 
-function combine(col::Int, vec1::Vector{Int}, vec2::Vector{Int})
+function combine{T<:Integer}(col::Int, vec1::Vector{T}, vec2::Vector{T})
     t = gcd(vec1[col], vec2[col])
     a1, a2 = div(vec1[col],t), div(vec2[col],t)
     return a1 * vec2 - a2 * vec1

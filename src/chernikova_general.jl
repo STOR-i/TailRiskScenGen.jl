@@ -13,7 +13,7 @@ function redundant_constraint_check{T<:Real}(mat::ChernMat{T}, k::Int, verbosity
     return red_rows
 end
 
-function chernikova_general{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
+function chernikova_general{T<:Integer}(A::Matrix{T}, verbosity::Int = 0)
     # Initialisation
     m, n = size(A)
     bidray = ChernMat(A)
@@ -148,4 +148,11 @@ function chernikova_general{T<:Real}(A::Matrix{T}, verbosity::Int = 0)
         pprint(uniray)
     end
     return norm_cols(LHS(bidray)'), norm_cols(LHS(uniray)'), redundant_rows
+end
+
+function remove_redundant_constraints{T<:Integer}(A::Matrix{T}, verbosity::Int = 0)
+    m,n = size(A)
+    uni, bid, red_cons = chernikova_general(A)
+    indices = setdiff(1:m, red_cons)
+    return A[indices,:]
 end
