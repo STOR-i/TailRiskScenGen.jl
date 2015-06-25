@@ -62,6 +62,8 @@ function pprint(mat::ChernMat)
     end
 end
 
+
+
 function chernikova{T<:Integer}(mat::ChernMat{T}, verbosity::Int = 0)
     m, n = mat.m, mat.n
     counter = 1
@@ -152,6 +154,11 @@ end
 function chernikova{T<:Integer}(A::Matrix{T}, verbosity::Int = 0)
     mat = ChernMat(A)
     chernikova(mat, verbosity)
+end
+
+function chernikova{T<:Rational}(A::Matrix{T}, verbosity::Int = 0)
+    C = intmat(A)
+    chernikova(C, vebosity)
 end
 
 function leading_col{T<:Integer}(mat::ChernMat{T})
