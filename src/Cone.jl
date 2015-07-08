@@ -45,6 +45,12 @@ type PolyhedralCone{T<:Real} <: Cone
 end
 
 PolyhedralCone{T<:Real}(A::Matrix{T}) = PolyhedralCone{T}(A)
+function PolyhedralCone{T<:Integer}(A::Matrix{T}, check=false)
+    if check
+        A = remove_redundant_constraints(A)
+    end
+    PolyhedralCone{T}(A)
+end
 
 function project(cone::PolyhedralCone, p::Vector{Float64})
     res = quadprog(-2.0*p, 2.0*eye(cone.n), cone.A,  '>', zeros(cone.m), fill(-Inf,cone.n), fill(Inf, cone.n),

@@ -3,18 +3,9 @@ import Base: num, den
 num{T<:Rational}(x::Array{T}) = map(y->y.num, x)
 den{T<:Rational}(x::Array{T}) = map(y->y.den, x)
 
+# Transform a rational matrix into an integer matrix by multiplying each row
 intmat{T<:Rational}(A::Matrix{T}) =  mapslices(z->int(z*(lcm(den(z))//gcd(num(z)))), A, 2)
 
-function intmatvec{T<:Rational}(A::Matrix{T}, b::Vector{T})
-    m = size(A, 1)
-    m == length(b) || throw(ArgumentError("Vector must have same number of rows as matrix"))
-    mults = Array(T, m)
-    for i in 1:m
-        mults[i] = lcm(lcm(A[i,:]), b[i])//gcd(gcd(A[i,:]), b[i])
-    end
-    int(broadcast(*, A, mults)), int(b.*mults)
-end
-        
 @doc """
 # Description
 Find the conical hull defined by the following constraints:
