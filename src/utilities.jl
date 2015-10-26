@@ -1,11 +1,3 @@
-import Base: num, den
-
-num{T<:Rational}(x::Array{T}) = map(y->y.num, x)
-den{T<:Rational}(x::Array{T}) = map(y->y.den, x)
-
-# Transform a rational matrix into an integer matrix by multiplying each row
-intmat{T<:Rational}(A::Matrix{T}) =  mapslices(z->int(z*(lcm(den(z))//gcd(num(z)))), A, 2)
-
 @doc """
 # Description
 Find the conical hull defined by the following constraints:
@@ -32,7 +24,7 @@ function cone_from_constraints{T<:Rational}(A::Matrix{T}, b::Vector{T}, c::T)
     A_poly = Array(T, m+n, n)
     A_poly[1:m,:] = broadcast(*, b, ones(T,m,n)) - A
     A_poly[n+1:n+m,:] = eye(T, n)
-    return PolyhedralCone(intmat(A_poly))
+    return PolyhedralCone(cones.intmat(A_poly))
 end
     
 @doc """
