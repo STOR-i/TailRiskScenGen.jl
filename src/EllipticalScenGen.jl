@@ -2,8 +2,6 @@ module EllipticalScenGen
 
 VERSION < v"0.4-" && using Docile
 
-@document
-
 using Distributions, SkewDist
 using cones
 using Gurobi
