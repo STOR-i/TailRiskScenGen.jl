@@ -8,11 +8,11 @@ See the following paper for more details: [Scenario generation for stochastic pr
 
 The risk region for our class of problems have the following form:
 
-![Basic form of risk regions](https://bitbucket.org/fairbrot/ellipticalscengen.jl/raw/master/docs/riskregion1.png "Formula for risk regions")
+![Basic form of risk regions](/docs/riskregion1.png?raw=true "Formula for risk regions")
 
 Given this formulation It is difficult to test whether a scenario `y` is in the risk region. When `K` is a convex cone, the above expression can be rewritten as follows:
 
-![Nice form of risk regions](https://bitbucket.org/fairbrot/ellipticalscengen.jl/raw/master/docs/riskregion2.png "Nice formula for risk regions")
+![Nice form of risk regions](/docs/riskregion2.png?raw=true "Nice formula for risk regions")
 
 where `K' = PK` and `p_k(y)` is the projection of the point y onto the cone K.
 
