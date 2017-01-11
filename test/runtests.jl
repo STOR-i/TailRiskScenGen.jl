@@ -1,6 +1,9 @@
 using EllipticalScenGen
 using Base.Test
 
+println("Running test_monotonic_utils.jl...")
+include("test_monotonic_utils.jl")
+
 println("Running test_RiskRegion.jl...")
 include("test_RiskRegion.jl")
 
