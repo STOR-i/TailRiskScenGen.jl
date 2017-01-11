@@ -27,3 +27,10 @@ frontier=list([2.0, 0.0, 1.0], [1.0, 1.0, 1.0], [1.0, 0.0, 2.0])
 @test below_nonrisk_frontier([0.5, -0.1, 1.5], frontier)
 @test !below_nonrisk_frontier([1.0, 1.0, 1.0], frontier)
 @test !below_nonrisk_frontier([5.0, 5.0, 1.0], frontier)
+
+l = list(1,2,3,4)
+l2 = tail(l)
+decapitate!(l2)
+@test l == list(1,3,4)
+@test l2 == list(3,4)
+

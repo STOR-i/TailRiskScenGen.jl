@@ -37,3 +37,9 @@ function above_risk_frontier(x::VecF64, frontier::LinkedList{VecF64})
     end
     return false
 end
+
+function decapitate!(l::Cons)
+    l.head=l.tail.head
+    l.tail=l.tail.tail
+    return l
+end
