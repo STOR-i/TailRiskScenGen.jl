@@ -1,12 +1,11 @@
 module EllipticalScenGen
 
-VERSION < v"0.4-" && using Docile
-
 using Distributions, SkewDist
-using cones
+using Cones
 using Gurobi
 using Clustering
 
+import Base: ∈
 import PDMats: dim
 
 export aggregate_scenarios, Cone, FiniteCone, PolyhedralCone, project, RiskRegion, transformed_size, in_RiskRegion, aggregation_sampling, nonrisk_clustering, dim, cone_from_constraints, quota_cone

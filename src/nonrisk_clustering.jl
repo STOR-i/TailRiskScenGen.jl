@@ -18,12 +18,18 @@ function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::Risk
         end
     end
 
-    num_clusters = min(num_non_risk, nr)
-    cluster_results = kmeans(non_risk_scen[:,1:nr], num_clusters)
-    scenarios[:, (num_risk+1):(num_risk+num_non_risk)] = cluster_results.centers
-    probs = Array(Float64, num_risk + num_clusters)
-    probs[1:num_risk] = 1.0/(r + nr)
-    probs[num_risk+1:num_risk + num_clusters] = cluster_results.cweights/(num_risk + nr)
+    if nr <= num_non_risk
+        scenarios[:,r+1:r+nr] = non_risk_scen[:,1:nr]
+        probs = fill(1.0/(r+nr), r+nr)
+        return scenarios, probs
+    else
+        num_clusters = num_non_risk
+        cluster_results = kmeans(non_risk_scen[:,1:nr], num_clusters)
+        scenarios[:, (num_risk+1):(num_risk+num_non_risk)] = cluster_results.centers
+        probs = Array(Float64, num_risk + num_clusters)
+        probs[1:r] = 1.0/(r + nr)
+        probs[r+1:r + num_clusters] = cluster_results.cweights/(r + nr)
+    end
     return scenarios, probs
 end
 
@@ -43,7 +49,7 @@ function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::RiskRegion, num_non_
             nr += 1
         end
     end
-    non_risk_scenarios = pointer_to_array(pointer(non_risk_scenarios), (dim, nr))
+    non_risk_scenarios = non_risk_scenarios[:, 1:nr]
     if nr > num_non_risk
         cluster_results = kmeans(non_risk_scenarios, num_non_risk)
         new_scenarios[:,(r+1):(r+num_non_risk)] = cluster_results.centers
