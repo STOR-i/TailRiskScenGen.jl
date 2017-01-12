@@ -13,10 +13,11 @@ end
 function (surv::SurvivorApproximator)(x::VecF64)
     count=0
     N = size(surv.sample, 2)
+    # count = @parallel (+) for i in 1:N
+    #     convert(Int, vec_isless(x, view(surv.sample, :, i)))
+    # end
     for i in 1:N
-        if vec_isless(x, view(surv.sample, :, i))
-            count+=1
-        end
+        count += convert(Int, vec_isless(x, view(surv.sample, :, i)))
     end
     prob=count/N
     se=sqrt((prob-prob^2)/N)
@@ -24,19 +25,20 @@ function (surv::SurvivorApproximator)(x::VecF64)
     return prob,err
 end
 
-function below_nonrisk_frontier(x::VecF64, frontier::LinkedList{VecF64})
+function below_nonrisk_frontier{T<:Real}(x::AbstractVector{T}, frontier::LinkedList{VecF64})
     for p in frontier
         if vec_isless(x,p) return true end
     end
     return false
 end
 
-function above_risk_frontier(x::VecF64, frontier::LinkedList{VecF64})
+function above_risk_frontier{T<:Real}(x::AbstractVector{T}, frontier::LinkedList{VecF64})
     for p in frontier
         if vec_isless(p, x) return true end
     end
     return false
 end
+
 
 function decapitate!(l::Cons)
     l.head=l.tail.head
