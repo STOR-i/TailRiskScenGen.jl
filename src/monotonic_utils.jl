@@ -10,7 +10,7 @@ type SurvivorApproximator
     α::Float64
 end
 
-function (surv::SurvivorApproximator)(x::VecF64)
+function (surv::SurvivorApproximator){T<:Real}(x::AbstractVector{T})
     count=0
     N = size(surv.sample, 2)
     # count = @parallel (+) for i in 1:N
