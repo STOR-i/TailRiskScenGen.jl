@@ -1,4 +1,4 @@
-function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion,
+function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::AbstractRiskRegion,
                             num_risk::Int64, num_non_risk::Int64)
     max_non_risk = (num_risk + num_non_risk) * 10
     dim = length(dist)
@@ -33,7 +33,7 @@ function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::Risk
     return scenarios, probs
 end
 
-function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::RiskRegion, num_non_risk::Int64)
+function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion, num_non_risk::Int64)
     dim, num_scen = size(scenarios)
     new_scenarios = Array(Float64, dim, num_scen)
     non_risk_scenarios = Array(Float64, dim, num_scen)

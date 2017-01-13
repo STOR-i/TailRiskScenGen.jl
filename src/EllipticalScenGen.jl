@@ -16,9 +16,9 @@ typealias VecF64 Vector{Float64}
 typealias MatF64 Matrix{Float64}
 
 include("utilities.jl")
+include("RiskRegion.jl")
 include("monotonic_utils.jl")
 include("monotonic_risk_regions.jl")
-include("RiskRegion.jl")
 include("nonrisk_clustering.jl")
 include("BruteForceRiskRegion.jl")
 include("ScenarioReduction.jl")

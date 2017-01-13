@@ -1,5 +1,5 @@
 @doc """Reduces a scenario set by aggregating all scenarios outside a specified risk region""" ->
-function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
+function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion)
     num_risk::Int64 = 0
     num_non_risk::Int64 = 0
     dim, num_scen = size(scenarios)
@@ -29,7 +29,7 @@ function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::RiskRegion)
     end
 end
 
-function _aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion, num_scen::Int64)
+function _aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::AbstractRiskRegion, num_scen::Int64)
     dim = length(dist)
     scenarios = Array(Float64, dim, num_scen)
     non_risk_sum = fill(0.0, dim)
@@ -55,7 +55,7 @@ function _aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::R
 end
 
 @doc """Constructs scenarios via aggregation sampling for a given distribution and risk region""" ->
-function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::RiskRegion, num_scen::Int64)
+function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::AbstractRiskRegion, num_scen::Int64)
     results = _aggregation_sampling(dist, Ω, num_scen)
     results["scenarios"], results["probs"]
 end

@@ -1,4 +1,4 @@
-type MonotonicRiskRegion
+type MonotonicRiskRegion <: AbstractRiskRegion
     β::Float64
     nonrisk_frontier::LinkedList{VecF64}
     risk_frontier::LinkedList{VecF64}

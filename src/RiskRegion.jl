@@ -1,4 +1,6 @@
-type RiskRegion
+abstract AbstractRiskRegion
+
+type RiskRegion <: AbstractRiskRegion
     μ::Vector{Float64}
     K::Cone
     inv_P::Matrix{Float64}
