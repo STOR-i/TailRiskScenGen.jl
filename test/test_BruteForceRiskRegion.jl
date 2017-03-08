@@ -32,7 +32,7 @@ lattice_width = 100
 
 Z = Normal()
 μ = rand(Z, dim)
-A = rand(Z, (dim, dim))
+A = rand(Z, dim, dim)
 Σ = A'A
 ## μ = fill(0.0, dim)
 ## Σ = eye(dim)
@@ -56,7 +56,7 @@ lattice_width = 100
 
 Z = Normal()
 μ = rand(Z, dim)
-A = rand(Z, (dim, dim))
+A = rand(Z, dim, dim)
 Σ = A'A
 df = 4.0
 ## μ = fill(0.0, dim)
