@@ -57,5 +57,41 @@ end
 @doc """Constructs scenarios via aggregation sampling for a given distribution and risk region""" ->
 function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::AbstractRiskRegion, num_scen::Int64)
     results = _aggregation_sampling(dist, Ω, num_scen)
-    results["scenarios"], results["probs"]
+    return results["scenarios"], results["probs"]
 end
+
+# function _parallel_aggregation_sampling(dist::Sampleable{Multivariate, Continuous},
+#                                         Ω::AbstractRiskRegion, num_scen::Int,
+#                                         num_threads::Int)
+#     d = length(dist)
+#     n, r = div(num_scen, num_threads), num_scen % num_threads
+#     threads = []
+#     push!(threads, @spawnat 1 _aggregation_sampling(dist, Ω, n+r))
+#     for i in 1:num_threads
+#         push!(threads, @spawnat i _aggregation_sampling(dist, Ω, n+1))
+#     end
+
+#     results_list = [fetch(p) for p in threads]
+#     total_sampled = sum(res["num_sampled"] for res in results_list)
+#     scenarios = Array(Float64, d, num_scen)
+#     scenarios[:, 1:(n+r-1)] = results_list[1]["scenarios"][:, 1:(n+r-1)]
+#     total_non_risk = results_list[1]["num_sampled"] - (n+r-1)
+#     scenarios[:, num_scen] = total_non_risk*results_list[1]["scenarios"][:, n+r]
+#     c = n+r
+#     for i in 2:num_threads
+#         scenarios[:,c:(c+n-1)] = results_list[i]["scenarios"][:,1:n]
+#         num_non_risk = results_list[i]["num_sampled"] - (n+r-1)
+#         total_non_risk += num_non_risk
+#         scenarios[:, num_scen] += num_non_risk*results_list[i]["scenarios"][:, n+1]
+#     end
+
+#     scenarios[:, num_scen]/=total_sampled
+#     probs = fill(1.0/total_sampled, num_scen)
+#     probs[num_scen] = total_non_risk/total_sampled
+#     results = Dict()
+#     results["num_sampled"] = total_sampled
+#     results["scenarios"] = scenarios
+#     results["probs"] = probs
+#     return results
+# end
+
