@@ -13,7 +13,7 @@ function cone_from_constraints{T<:Real}(A::Matrix{T}, b::Vector{T}, c::T)
     c > 0 || error("c must be strictly positive")
     A_poly = Array(T, m+n, n)
     A_poly[1:m,:] = broadcast(*, b, ones(T,m,n)) - A
-    A_poly[n+1:n+m,:] = eye(T, n)
+    A_poly[m+1:n+m,:] = eye(T, n)
     return PolyhedralCone(A_poly)
 end
 

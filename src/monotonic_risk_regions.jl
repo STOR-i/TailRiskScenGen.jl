@@ -8,7 +8,7 @@ type MonotonicRiskRegion <: AbstractRiskRegion
     end
 end
 
-function add_to_risk_frontier!{T<:Real}(Ω::MonotonicRiskRegion, x::AbstractVector{T})
+function add_to_risk_frontier!{T<:Real}(Ω::AbstractRiskRegion, x::AbstractVector{T})
     l = Ω.risk_frontier
     if isa(l, Nil{VecF64})
         return Ω.risk_frontier=list(x[:])
@@ -28,7 +28,7 @@ function add_to_risk_frontier!{T<:Real}(Ω::MonotonicRiskRegion, x::AbstractVect
     return Ω.risk_frontier = cons(x[:], Ω.risk_frontier)
 end
 
-function add_to_nonrisk_frontier!{T<:Real}(Ω::MonotonicRiskRegion, x::AbstractVector{T})
+function add_to_nonrisk_frontier!{T<:Real}(Ω::AbstractRiskRegion, x::AbstractVector{T})
     l = Ω.nonrisk_frontier
     if isa(l, Nil{VecF64})
         return Ω.nonrisk_frontier=list(x[:])
