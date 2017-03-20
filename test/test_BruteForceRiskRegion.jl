@@ -3,7 +3,7 @@
 
 using Distributions
 
-function verify_RiskRegion(dist::Sampleable, Ω::RiskRegion, Ω_bf::EllipticalScenGen.BruteForceRiskRegion, n::Int64)
+function verify_RiskRegion(dist::Sampleable, Ω::AbstractRiskRegion, Ω_bf::EllipticalScenGen.BruteForceRiskRegion, n::Int64)
     for i in 1:n
         y = rand(dist)
         ellipse_res = y ∈ Ω
@@ -39,7 +39,7 @@ A = rand(Z, dim, dim)
 dist = MvNormal(μ, Σ)
 K = FiniteCone(eye(dim))
 
-Ω_ellipse = RiskRegion(dist, K, β)
+Ω_ellipse = EllipticalRiskRegion(dist, K, β)
 Ω_bf = EllipticalScenGen.BruteForceRiskRegion(dist, K, β, lattice_width)
 
 verify_RiskRegion(dist, Ω_ellipse, Ω_bf, num_points)
@@ -52,18 +52,17 @@ print("\tTest 2 - MvTDist...")
 dim = 3
 num_points = 1000
 lattice_width = 100
-β = 0.99
+β = 0.95
 
-Z = Normal()
-μ = rand(Z, dim)
-A = rand(Z, dim, dim)
+μ = randn(dim)
+A = randn(dim, dim)/sqrt(dim)
 Σ = A'A
 df = 4.0
 ## μ = fill(0.0, dim)
 ## Σ = eye(dim)
 dist = MvTDist(df, μ, Σ)
 K = FiniteCone(eye(dim))
-Ω_ellipse = RiskRegion(dist, K, β)
+Ω_ellipse = EllipticalRiskRegion(dist, K, β)
 Ω_bf = EllipticalScenGen.BruteForceRiskRegion(dist, K, β, lattice_width)
 
 verify_RiskRegion(dist, Ω_ellipse, Ω_bf, num_points)
