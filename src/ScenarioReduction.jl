@@ -1,7 +1,7 @@
 @doc """Reduces a scenario set by aggregating all scenarios outside a specified risk region""" ->
 function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion)
-    num_risk::Int64 = 0
-    num_non_risk::Int64 = 0
+    num_risk = 0
+    num_non_risk = 0
     dim, num_scen = size(scenarios)
     new_scenarios = Array(Float64, dim, num_scen)
     non_risk_sum = zeros(dim)
