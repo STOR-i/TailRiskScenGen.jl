@@ -1,4 +1,4 @@
-using EllipticalScenGen: vec_isless, SurvivorApproximator, below_nonrisk_frontier, above_risk_frontier, decapitate!
+using TailRiskScenGen: vec_isless, SurvivorApproximator, below_nonrisk_frontier, above_risk_frontier, decapitate!
 using Distributions
 using DataStructures
 using Base: Test

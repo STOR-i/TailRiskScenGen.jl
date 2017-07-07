@@ -1,4 +1,4 @@
-using EllipticalScenGen: MonotonicRiskRegion, SurvivorApproximator, prob_nonrisk
+using TailRiskScenGen: MonotonicRiskRegion, SurvivorApproximator, prob_nonrisk
 using Distributions
 using DataStructures
 using StatsFuns

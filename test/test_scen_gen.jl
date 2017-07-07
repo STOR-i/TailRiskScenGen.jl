@@ -1,4 +1,4 @@
-using EllipticalScenGen
+using TailRiskScenGen
 using Base: Test
 using Distributions
 
@@ -17,7 +17,7 @@ A = rand(d,d)./d
 Σ = A'A
 K = FiniteCone(-eye(d))
 dist = MvNormal(μ, Σ)
-Ω = RiskRegion(dist, K, 0.95)
+Ω = EllipticalRiskRegion(dist, K, 0.95)
 scenarios = rand(dist, num_scen)
 
 new_scen, new_prob = aggregate_scenarios(scenarios, Ω)
