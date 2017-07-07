@@ -1,4 +1,4 @@
-using EllipticalScenGen
+using TailRiskScenGen
 using Cones
 using Distributions
 
@@ -49,12 +49,12 @@ y ∈ Ω_mono
 
 print("EllipticalRiskRegion...")
 tic()
-EllipticalScenGen._aggregation_sampling(dist, Ω_gen, num_scen)
+TailRiskScenGen._aggregation_sampling(dist, Ω_gen, num_scen)
 toc()
 
 print("MonotonicEllipticalRiskRegion...")
 tic()
-EllipticalScenGen._aggregation_sampling(dist, Ω_mono, num_scen)
+TailRiskScenGen._aggregation_sampling(dist, Ω_mono, num_scen)
 toc()
 
 println("Num non-risk frontier points: ", length(Ω_mono.risk_frontier))

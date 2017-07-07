@@ -1,4 +1,4 @@
-module EllipticalScenGen
+module TailRiskScenGen
 
 using Distributions, SkewDist
 using Cones

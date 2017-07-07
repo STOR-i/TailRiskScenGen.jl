@@ -1,7 +1,7 @@
 # Benchmarks for projection time of FiniteCone vs. PolyhedralCone
 
 using BenchmarkLite
-using Distributions, EllipticalScenGen
+using Distributions, TailRiskScenGen
 
 # FiniteCone Benchmark test definition 
 

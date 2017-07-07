@@ -1,4 +1,4 @@
-using EllipticalScenGen
+using TailRiskScenGen
 using Distributions
 ## using Gadfly
 

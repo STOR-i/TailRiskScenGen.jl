@@ -1,4 +1,4 @@
-using EllipticalScenGen
+using TailRiskScenGen
 using Distributions
 
 # Inputs - change as necessary

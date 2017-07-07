@@ -1,4 +1,4 @@
-using EllipticalScenGen
+using TailRiskScenGen
 using Base.Test
 
 println("Running test_monotonic_utils.jl...")

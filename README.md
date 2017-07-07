@@ -1,4 +1,4 @@
-# EllipticalScenGen.jl
+# TailRiskScenGen.jl
 
 This Julia package provides tools for generating scenario sets. The methodology employed is in particular adapted to portfolio selection problems using tail risk measures where the returns have near-elliptical distributions. For this problems involving tail risk measure, the value of the tail risk measure depends only a subset of the support of the distribution called the **risk region**. This package exploits this property by providing functions which prioritise the generation of scenarios in these risk regions for the class of problems described above.
 
