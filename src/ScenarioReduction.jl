@@ -3,7 +3,7 @@ function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion)
     num_risk = 0
     num_non_risk = 0
     dim, num_scen = size(scenarios)
-    new_scenarios = Array(Float64, dim, num_scen)
+    new_scenarios = Array{Float64}(dim, num_scen)
     non_risk_sum = zeros(dim)
     for s in 1:num_scen
         if scenarios[:,s] ∈ Ω
@@ -31,7 +31,7 @@ end
 
 function _aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::AbstractRiskRegion, num_scen::Int64)
     dim = length(dist)
-    scenarios = Array(Float64, dim, num_scen)
+    scenarios = Array{Float64}(dim, num_scen)
     non_risk_sum = fill(0.0, dim)
     num_risk = 0
     num_non_risk = 0

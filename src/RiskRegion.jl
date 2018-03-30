@@ -1,4 +1,4 @@
-abstract AbstractRiskRegion
+abstract type AbstractRiskRegion end
 
 @deprecate RiskRegion EllipticalRiskRegion
 
@@ -31,7 +31,8 @@ function EllipticalRiskRegion(μ::Distributions.ZeroVector, Σ::Matrix{Float64},
 end
 EllipticalRiskRegion(dist::AbstractMvNormal, K::Cone, β::Float64) = EllipticalRiskRegion(dist.μ, dist.Σ.mat, K, quantile(Normal(), β))
 EllipticalRiskRegion(dist::Distributions.AbstractMvTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.μ, dist.Σ.mat, K, quantile(TDist(dist.df), β))
-EllipticalRiskRegion(dist::MvSkewTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.ξ, dist.Ω.mat, K, quantile(TDist(dist.df), β))
+
+# EllipticalRiskRegion(dist::MvSkewTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.ξ, dist.Ω.mat, K, quantile(TDist(dist.df), β))
 
 function transformed_size(Ω::EllipticalRiskRegion, x::Vector{Float64})
     x_trans = x - Ω.μ

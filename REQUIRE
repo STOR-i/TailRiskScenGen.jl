@@ -1,5 +1,5 @@
-julia 0.5
+julia 0.6
 Distributions 0.7-
-MathProgBase 0.3-
-Gurobi 0.1-
+MathProgBase 0.7
+Gurobi 0.3
 Clustering 0.3-

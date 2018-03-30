@@ -6,7 +6,7 @@ function test_points(Ω::EllipticalRiskRegion, file_name::String)
     for i in 1:size(res,1)
         row = res[i,:]
         x, dist = row[1:end-1], row[end]
-        @test_approx_eq_eps transformed_size(Ω, x) dist 1e-2
+        @test transformed_size(Ω, x) ≈ dist atol=1e-2
     end
 end
 

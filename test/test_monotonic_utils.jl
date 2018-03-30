@@ -16,7 +16,7 @@ sample = rand(dist, 10000)
 α = 0.99
 surv = SurvivorApproximator(sample, α)
 approx_prob, err = surv(zeros(d))
-@test_approx_eq_eps 0.5^d approx_prob err
+@test 0.5^d ≈ approx_prob atol=err
 
 frontier=list([2.0, 0.0, 1.0], [1.0, 1.0, 1.0], [1.0, 0.0, 2.0])
 @test above_risk_frontier([3.0, 3.0, 3.0], frontier)
