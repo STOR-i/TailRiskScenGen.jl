@@ -1,0 +1,10 @@
+name = "TailRiskScenGen"
+uuid = "a5a73894-7016-59b6-824e-4b62a6ed08b6"
+
+[deps]
+Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
+Cones = "1f8e2c57-a612-5c5a-a7df-c0bd456342db"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+Gurobi = "2e9cd046-0924-5485-92f1-d5272153d98b"
+MathProgBase = "fdba3010-5040-5b88-9595-932c9decdf73"
+SkewDist = "5196a277-20f3-5297-9321-6a125718f3bb"
