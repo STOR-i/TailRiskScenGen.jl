@@ -1,8 +1,19 @@
 # TailRiskScenGen.jl
 
-This Julia package provides tools for generating scenario sets. The methodology employed is in particular adapted to portfolio selection problems using tail risk measures where the returns have near-elliptical distributions. For this problems involving tail risk measure, the value of the tail risk measure depends only a subset of the support of the distribution called the **risk region**. This package exploits this property by providing functions which prioritise the generation of scenarios in these risk regions for the class of problems described above.
+This Julia package provides functionality for generating scenarios for stochastic programs which use a tail risk measure such as the conditional value-at-risk. For problems involving tail risk measure, the value of the tail risk measure depends only a subset of the support of the distribution called the **risk region**. By prioritising the generation of scenarios in the risk region, one can approximate much better the value of a tail risk measure in a stochastic program.
 
-See the following paper for more details: [Scenario generation for stochastic programs with tail risk measure](http://arxiv.org/abs/1511.03074)
+This package allows users to construct risk regions and use these scenario generaion and reduction.
+Currently risk regions are provided for two types of problems:
+
+- Portfolio selection problem with Elliptical return distributions
+- Stochastic programs with monotonic loss/recourse functions.
+
+In the former case it has been shown that the methodology still performs well when the returns have near-elliptical distributions.
+
+For more details on this methodology see the following two papers:
+
+- [Problem-driven scenario generation: an analytical approach for stochastic programs with tail risk measure](http://arxiv.org/abs/1511.03074)
+- [Scenario Generation for Single-Period Portfolio Selection Problems with Tail Risk Measures: Coping with High Dimensions and Integer Variables](https://pubsonline.informs.org/doi/10.1287/ijoc.2017.0790)
 
 # Risk regions
 
