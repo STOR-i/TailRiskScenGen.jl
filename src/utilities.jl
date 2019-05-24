@@ -13,20 +13,20 @@ function cone_from_constraints(A::Matrix{T}, b::Vector{T}, c::T) where T<: Real
     m, n = size(A)
     m == length(b) || error("A and b must have consistent dimensions")
     c > 0 || error("c must be strictly positive")
-    A_poly = Array(T, m+n, n)
+    A_poly = Array{T}(undef, m+n, n)
     A_poly[1:m,:] = broadcast(*, b, ones(T,m,n)) - A
-    A_poly[m+1:n+m,:] = eye(T, n)
-    return PolyhedralCone(A_poly)
+    A_poly[m+1:n+m,:] = Array{T}(LinearAlgebra.I, n, n)
+    return PolyhedralCone{T}(A_poly)
 end
 
 function cone_from_constraints(A::Matrix{T}, b::Vector{T}, c::T) where T <: Rational
     m, n = size(A)
     m == length(b) || error("A and b must have consistent dimensions")
     c > 0 || error("c must be strictly positive")
-    A_poly = Array(T, m+n, n)
+    A_poly = Array{T}(undef, m+n, n)
     A_poly[1:m,:] = broadcast(*, b, ones(T,m,n)) - A
-    A_poly[n+1:n+m,:] = eye(T, n)
-    return PolyhedralCone(cones.intmat(A_poly))
+    A_poly[n+1:n+m,:] = Array{T}(LinearAlgebra.I, n, n)
+    return PolyhedralCone{T}(cones.intmat(A_poly))
 end
     
 """
@@ -42,7 +42,7 @@ x ≥ 0
 """
 function quota_cone(u::Vector{T}) where T <: Real
     n = length(u)
-    return cone_from_constraints(eye(T,n), u, one(T))
+    return cone_from_constraints(Array{T}(LinearAlgebra.I, n, n), u, one(T))
 end
 
 function checkRiskRegionArgs(μ::Vector{Float64}, Σ::Matrix{Float64},

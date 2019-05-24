@@ -21,7 +21,7 @@ mutable struct EllipticalRiskRegion <: AbstractRiskRegion
         checkRiskRegionArgs(μ, Σ, K, α)
         P = LinearAlgebra.cholesky(Σ).U
         inv_P = inv(P)
-        new_K = PolyhedralCone((-K.A) * inv_P)
+        new_K = PolyhedralCone{Float64}((-K.A) * inv_P) # quickfix
         new(μ, new_K, inv_P, α)
     end
 end
