@@ -1,4 +1,4 @@
-type MonotonicRiskRegion <: AbstractRiskRegion
+mutable struct MonotonicRiskRegion <: AbstractRiskRegion
     β::Float64
     nonrisk_frontier::LinkedList{VecF64}
     risk_frontier::LinkedList{VecF64}
@@ -8,7 +8,7 @@ type MonotonicRiskRegion <: AbstractRiskRegion
     end
 end
 
-function add_to_risk_frontier!{T<:Real}(Ω::AbstractRiskRegion, x::AbstractVector{T})
+function add_to_risk_frontier!(Ω::AbstractRiskRegion, x::AbstractVector{T}) where T<:Real
     l = Ω.risk_frontier
     if isa(l, Nil{VecF64})
         return Ω.risk_frontier=list(x[:])
@@ -28,7 +28,7 @@ function add_to_risk_frontier!{T<:Real}(Ω::AbstractRiskRegion, x::AbstractVecto
     return Ω.risk_frontier = cons(x[:], Ω.risk_frontier)
 end
 
-function add_to_nonrisk_frontier!{T<:Real}(Ω::AbstractRiskRegion, x::AbstractVector{T})
+function add_to_nonrisk_frontier!(Ω::AbstractRiskRegion, x::AbstractVector{T}) where T<:Real
     l = Ω.nonrisk_frontier
     if isa(l, Nil{VecF64})
         return Ω.nonrisk_frontier=list(x[:])

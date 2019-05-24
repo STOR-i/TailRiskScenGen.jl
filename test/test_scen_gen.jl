@@ -1,10 +1,10 @@
+using LinearAlgebra: I
 using TailRiskScenGen
-using Base: Test
 using Distributions
 
 function valid_scenario_set(scenarios::Matrix{Float64}, probs::Vector{Float64})
     @test size(scenarios, 2) == length(probs)
-    @test_approx_eq sum(probs) 1.0
+    @test sum(probs) ≈ 1.0
     for p in probs
         @test (p >= 0)
     end
@@ -15,7 +15,7 @@ num_scen = 1000
 μ = rand(Normal(), d)
 A = rand(d,d)./d
 Σ = A'A
-K = FiniteCone(-eye(d))
+K = FiniteCone(-Array{Float64}(I, d, d))
 dist = MvNormal(μ, Σ)
 Ω = EllipticalRiskRegion(dist, K, 0.95)
 scenarios = rand(dist, num_scen)

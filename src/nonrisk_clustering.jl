@@ -2,8 +2,8 @@ function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::Abst
                             num_risk::Int64, num_non_risk::Int64)
     max_non_risk = (num_risk + num_non_risk) * 10
     dim = length(dist)
-    scenarios = Array(Float64, dim, num_risk + num_non_risk)
-    non_risk_scen = Array(Float64, dim, max_non_risk)
+    scenarios = Array{Float64}(undef, dim, num_risk + num_non_risk)
+    non_risk_scen = Array{Float64}(undef, dim, max_non_risk)
     r = 0                  # Counter for risk scenarios
     nr = 0   # Counter for non-risk scenarios
 
@@ -26,17 +26,17 @@ function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::Abst
         num_clusters = num_non_risk
         cluster_results = kmeans(non_risk_scen[:,1:nr], num_clusters)
         scenarios[:, (num_risk+1):(num_risk+num_non_risk)] = cluster_results.centers
-        probs = Array(Float64, num_risk + num_clusters)
-        probs[1:r] = 1.0/(r + nr)
-        probs[r+1:r + num_clusters] = cluster_results.cweights/(r + nr)
+        probs = Array{Float64}(undef, num_risk + num_clusters)
+        probs[1:r] .= 1.0/(r + nr)
+        probs[r+1:r + num_clusters] .= cluster_results.cweights/(r + nr)
     end
     return scenarios, probs
 end
 
 function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion, num_non_risk::Int64)
     dim, num_scen = size(scenarios)
-    new_scenarios = Array(Float64, dim, num_scen)
-    non_risk_scenarios = Array(Float64, dim, num_scen)
+    new_scenarios = Array{Float64}(undef, dim, num_scen)
+    non_risk_scenarios = Array{Float64}(undef, dim, num_scen)
     r = 0   # Risk scenario counter
     nr = 0  # Non-risk scenario counter
     for s in 1:num_scen
@@ -56,7 +56,7 @@ function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion, 
         # The following line causes a garbage-collection related bug, so we use something less efficient...
         # new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, r + num_non_risk))
         new_scenarios = new_scenarios[:, 1:r + num_non_risk]
-        new_probs = Array(Float64, r + num_non_risk)
+        new_probs = Array{Float64}(undef, r + num_non_risk)
         new_probs[1:r] = fill(1.0/(r + nr), r)
         new_probs[r+1:r + num_non_risk] = cluster_results.cweights/(r + nr)
     else

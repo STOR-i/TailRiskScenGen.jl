@@ -1,8 +1,8 @@
-abstract AbstractRiskRegion
+abstract type AbstractRiskRegion end
 
 @deprecate RiskRegion EllipticalRiskRegion
 
-type EllipticalRiskRegion <: AbstractRiskRegion
+mutable struct EllipticalRiskRegion <: AbstractRiskRegion
     μ::Vector{Float64}
     K::Cone
     inv_P::Matrix{Float64}
@@ -10,7 +10,7 @@ type EllipticalRiskRegion <: AbstractRiskRegion
     function EllipticalRiskRegion(μ::Vector{Float64}, Σ::Matrix{Float64},
                         K::FiniteCone, α::Float64)
         checkRiskRegionArgs(μ, Σ, K, α)
-        P = chol(Σ)
+        P = LinearAlgebra.cholesky(Σ).U
         inv_P = inv(P)
         new_K = FiniteCone(P*(-K.A))
         new(μ, new_K, inv_P, α)
@@ -19,7 +19,7 @@ type EllipticalRiskRegion <: AbstractRiskRegion
     function EllipticalRiskRegion(μ::Vector{Float64}, Σ::Matrix{Float64},
                         K::PolyhedralCone, α::Float64)
         checkRiskRegionArgs(μ, Σ, K, α)
-        P = chol(Σ)
+        P = LinearAlgebra.cholesky(Σ).U
         inv_P = inv(P)
         new_K = PolyhedralCone((-K.A) * inv_P)
         new(μ, new_K, inv_P, α)
@@ -31,7 +31,7 @@ function EllipticalRiskRegion(μ::Distributions.ZeroVector, Σ::Matrix{Float64},
 end
 EllipticalRiskRegion(dist::AbstractMvNormal, K::Cone, β::Float64) = EllipticalRiskRegion(dist.μ, dist.Σ.mat, K, quantile(Normal(), β))
 EllipticalRiskRegion(dist::Distributions.AbstractMvTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.μ, dist.Σ.mat, K, quantile(TDist(dist.df), β))
-EllipticalRiskRegion(dist::MvSkewTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.ξ, dist.Ω.mat, K, quantile(TDist(dist.df), β))
+# EllipticalRiskRegion(dist::MvSkewTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.ξ, dist.Ω.mat, K, quantile(TDist(dist.df), β))
 
 function transformed_size(Ω::EllipticalRiskRegion, x::Vector{Float64})
     x_trans = x - Ω.μ
@@ -45,7 +45,7 @@ end
 
 length(Ω::EllipticalRiskRegion) = length(Ω.μ)
 
-type MonotonicEllipticalRiskRegion <: AbstractRiskRegion
+mutable struct MonotonicEllipticalRiskRegion <: AbstractRiskRegion
     # Note that cost function for portfolio selection is negative
     # monotonic, so roles of risk and non-risk frontiers are reversed
     Ω::EllipticalRiskRegion

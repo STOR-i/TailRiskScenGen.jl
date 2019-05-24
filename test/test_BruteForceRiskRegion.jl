@@ -1,6 +1,7 @@
 # Tests if RiskRegion and BruteForceRiskRegion define (approximately) the same region by
 # testing for membership of both for many randomly generated points.
 
+using LinearAlgebra: I
 using Distributions
 
 function verify_RiskRegion(dist::Sampleable, Ω::AbstractRiskRegion, Ω_bf::TailRiskScenGen.BruteForceRiskRegion, n::Int64)
@@ -19,7 +20,8 @@ function verify_RiskRegion(dist::Sampleable, Ω::AbstractRiskRegion, Ω_bf::Tail
     end
 end
 
-srand(1)
+using Random
+Random.seed!(1)
 
 # Test RiskRegion for multivariate normal distribution
 
@@ -37,7 +39,7 @@ A = rand(Z, dim, dim)
 ## μ = fill(0.0, dim)
 ## Σ = eye(dim)
 dist = MvNormal(μ, Σ)
-K = FiniteCone(eye(dim))
+K = FiniteCone(Array{Float64}(I, dim, dim))
 
 Ω_ellipse = EllipticalRiskRegion(dist, K, β)
 Ω_bf = TailRiskScenGen.BruteForceRiskRegion(dist, K, β, lattice_width)
@@ -61,7 +63,7 @@ df = 4.0
 ## μ = fill(0.0, dim)
 ## Σ = eye(dim)
 dist = MvTDist(df, μ, Σ)
-K = FiniteCone(eye(dim))
+K = FiniteCone(Array{Float64}(I, dim, dim))
 Ω_ellipse = EllipticalRiskRegion(dist, K, β)
 Ω_bf = TailRiskScenGen.BruteForceRiskRegion(dist, K, β, lattice_width)
 

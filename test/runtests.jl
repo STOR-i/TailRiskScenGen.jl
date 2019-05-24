@@ -1,5 +1,5 @@
 using TailRiskScenGen
-using Base.Test
+using Test
 
 println("Running test_monotonic_utils.jl...")
 include("test_monotonic_utils.jl")

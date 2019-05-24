@@ -1,9 +1,9 @@
-@doc """Reduces a scenario set by aggregating all scenarios outside a specified risk region""" ->
+"""Reduces a scenario set by aggregating all scenarios outside a specified risk region"""
 function aggregate_scenarios(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion)
     num_risk = 0
     num_non_risk = 0
     dim, num_scen = size(scenarios)
-    new_scenarios = Array(Float64, dim, num_scen)
+    new_scenarios = Array{Float64}(undef, dim, num_scen)
     non_risk_sum = zeros(dim)
     for s in 1:num_scen
         if scenarios[:,s] ∈ Ω
@@ -31,7 +31,7 @@ end
 
 function _aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::AbstractRiskRegion, num_scen::Int64)
     dim = length(dist)
-    scenarios = Array(Float64, dim, num_scen)
+    scenarios = Array{Float64}(undef, dim, num_scen)
     non_risk_sum = fill(0.0, dim)
     num_risk = 0
     num_non_risk = 0
@@ -54,7 +54,7 @@ function _aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::A
     results
 end
 
-@doc """Constructs scenarios via aggregation sampling for a given distribution and risk region""" ->
+"""Constructs scenarios via aggregation sampling for a given distribution and risk region"""
 function aggregation_sampling(dist::Sampleable{Multivariate, Continuous}, Ω::AbstractRiskRegion, num_scen::Int64)
     results = _aggregation_sampling(dist, Ω, num_scen)
     return results["scenarios"], results["probs"]
@@ -73,7 +73,7 @@ end
 
 #     results_list = [fetch(p) for p in threads]
 #     total_sampled = sum(res["num_sampled"] for res in results_list)
-#     scenarios = Array(Float64, d, num_scen)
+#     scenarios = Array{Float64}(undef, d, num_scen)
 #     scenarios[:, 1:(n+r-1)] = results_list[1]["scenarios"][:, 1:(n+r-1)]
 #     total_non_risk = results_list[1]["num_sampled"] - (n+r-1)
 #     scenarios[:, num_scen] = total_non_risk*results_list[1]["scenarios"][:, n+r]

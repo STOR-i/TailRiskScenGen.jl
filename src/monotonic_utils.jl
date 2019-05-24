@@ -5,12 +5,12 @@ function vec_isless(x::AbstractArray, y::AbstractArray)
     return true
 end
 
-type SurvivorApproximator
+mutable struct SurvivorApproximator
     sample::MatF64
     α::Float64
 end
 
-function (surv::SurvivorApproximator){T<:Real}(x::AbstractVector{T})
+function (surv::SurvivorApproximator)(x::AbstractVector{T}) where T<:Real
     count=0
     N = size(surv.sample, 2)
     # count = @parallel (+) for i in 1:N
@@ -25,14 +25,14 @@ function (surv::SurvivorApproximator){T<:Real}(x::AbstractVector{T})
     return prob,err
 end
 
-function below_nonrisk_frontier{T<:Real}(x::AbstractVector{T}, frontier::LinkedList{VecF64})
+function below_nonrisk_frontier(x::AbstractVector{T}, frontier::LinkedList{VecF64}) where T <: Real
     for p in frontier
         if vec_isless(x,p) return true end
     end
     return false
 end
 
-function above_risk_frontier{T<:Real}(x::AbstractVector{T}, frontier::LinkedList{VecF64})
+function above_risk_frontier(x::AbstractVector{T}, frontier::LinkedList{VecF64}) where T <: Real
     for p in frontier
         if vec_isless(p, x) return true end
     end

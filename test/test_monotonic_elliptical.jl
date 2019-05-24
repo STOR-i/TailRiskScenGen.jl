@@ -1,5 +1,6 @@
 using TailRiskScenGen
 using Cones
+using LinearAlgebra: I
 using Distributions
 
 d = 30
@@ -8,7 +9,7 @@ num_scen = 5000
 A = rand(d,d)/sqrt(d)
 dist = MvNormal(0.1*rand(d)-0.05, A'A)
 
-K = PolyhedralCone(eye(d))
+K = PolyhedralCone(Array{Float64}(I, d, d))
 Ω_gen = EllipticalRiskRegion(dist, K, β)
 Ω_mono = MonotonicEllipticalRiskRegion(dist, K, β)
 Ω_mono.max_frontier_points = d*5

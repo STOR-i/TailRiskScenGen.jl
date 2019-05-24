@@ -1,4 +1,6 @@
-@doc """
+using LinearAlgebra
+
+"""
 # Description
 Find the conical hull defined by the following constraints:
   1ᵀx = c
@@ -6,8 +8,8 @@ Find the conical hull defined by the following constraints:
   x ≥ 0
 # Returns
 * `::PolyhedralCone`: conical hull of constraints
-""" ->
-function cone_from_constraints{T<:Real}(A::Matrix{T}, b::Vector{T}, c::T)
+"""
+function cone_from_constraints(A::Matrix{T}, b::Vector{T}, c::T) where T<: Real
     m, n = size(A)
     m == length(b) || error("A and b must have consistent dimensions")
     c > 0 || error("c must be strictly positive")
@@ -17,7 +19,7 @@ function cone_from_constraints{T<:Real}(A::Matrix{T}, b::Vector{T}, c::T)
     return PolyhedralCone(A_poly)
 end
 
-function cone_from_constraints{T<:Rational}(A::Matrix{T}, b::Vector{T}, c::T)
+function cone_from_constraints(A::Matrix{T}, b::Vector{T}, c::T) where T <: Rational
     m, n = size(A)
     m == length(b) || error("A and b must have consistent dimensions")
     c > 0 || error("c must be strictly positive")
@@ -27,7 +29,7 @@ function cone_from_constraints{T<:Rational}(A::Matrix{T}, b::Vector{T}, c::T)
     return PolyhedralCone(cones.intmat(A_poly))
 end
     
-@doc """
+"""
 # Description
 Finds the conical hull of of the region define
 by the following constraints:
@@ -37,8 +39,8 @@ x ≤ u
 x ≥ 0
 # Returns
 * `::PolyhedralCone` conical hull from constraints
-""" ->
-function quota_cone{T<:Real}(u::Vector{T})
+"""
+function quota_cone(u::Vector{T}) where T <: Real
     n = length(u)
     return cone_from_constraints(eye(T,n), u, one(T))
 end
@@ -46,7 +48,7 @@ end
 function checkRiskRegionArgs(μ::Vector{Float64}, Σ::Matrix{Float64},
                              K::Cone, α::Float64)
         if length(μ) != size(Σ, 1) ArgumentError("μ and Σ must have consistent dimensions") end
-        if !isposdef(Σ) ArgumentError("Σ must be a positive definite matrix") end
+        if !LinearAlgebra.isposdef(Σ) ArgumentError("Σ must be a positive definite matrix") end
         if length(K) != length(μ) ArgumentError("Cone must be in same dimension as mean vector") end
         if α <= 0 ArgumentError("α must be strictly positive") end
 end

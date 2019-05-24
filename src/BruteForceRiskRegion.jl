@@ -1,4 +1,4 @@
-type BruteForceRiskRegion
+mutable struct BruteForceRiskRegion
     μ::Vector{Float64}
     Σ::Matrix{Float64}
     lattice::Array{Vector{Float64}}
@@ -7,7 +7,7 @@ type BruteForceRiskRegion
         checkRiskRegionArgs(μ, Σ, K, α)
         cone_coords = simplex(lattice_width, K.num_gen)
         num_points = length(cone_coords)
-        lattice = Array(Vector{Float64}, num_points)
+        lattice = Array{Vector{Float64}}(undef, num_points)
         for (i,p) in enumerate(cone_coords)
             lattice[i] = -K.A*p
         end
@@ -40,7 +40,7 @@ end
 # n -- the dimension of the space containing the simplex
 ##
 function simplex(N::Int64, n::Int64)
-    simplices = Array(Vector{Int64}, 0)
+    simplices = Array{Vector{Int64}}(undef, 0)
     if n > 1
         for i in 0:N
             for p in simplex(N-i, n-1)
@@ -51,7 +51,7 @@ function simplex(N::Int64, n::Int64)
         return simplices
     end
     if n == 1
-        points = Array(Vector{Int64}, 1)
+        points = Array{Vector{Int64}}(undef, 1)
         points[1] = [N]
         return points
     end
