@@ -1,0 +1,21 @@
+name = "TailRiskScenGen"
+uuid = "254d054e-9da2-11e9-02a9-5f23bb595ba6"
+authors = ["fairbrot <jfairbrother87@hotmail.com>"]
+version = "0.1.0"
+
+[deps]
+Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
+Cones = "528acd1a-9da3-11e9-1d96-1d1f7983316d"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+Gurobi = "2e9cd046-0924-5485-92f1-d5272153d98b"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
+StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+
+[targets]
+test = ["Test", "DelimitedFiles"]
