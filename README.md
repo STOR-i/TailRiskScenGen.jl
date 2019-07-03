@@ -69,10 +69,3 @@ and aggregates any in the non-risk region. The algorithm terminates when the req
 n = 500 # Scenario set size
 scenarios, probs = aggregation_sampling(Y, Ω, n)
 ```
-
-# Acknowledgements
-
-This project makes uses code from the Siconos Numerics project
-(http://siconos.gforge.inria.fr/) developed by INRIA for solving
-linear complementarity complementarity problems using Lemke's
-algorithm.
