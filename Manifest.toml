@@ -55,7 +55,7 @@ version = "0.2.0+1"
 deps = ["Gurobi", "LinearAlgebra", "MathProgBase", "Printf"]
 git-tree-sha1 = "a0d7b3996d44c7a823d38ec8f3c66311add752df"
 repo-rev = "master"
-repo-url = "https://github.com/fairbrot/Cones.jl"
+repo-url = "https://github.com/fairbrot/Cones.jl.git"
 uuid = "528acd1a-9da3-11e9-1d96-1d1f7983316d"
 version = "0.1.0"
 
