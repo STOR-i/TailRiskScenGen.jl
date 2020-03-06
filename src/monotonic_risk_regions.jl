@@ -1,3 +1,16 @@
+mutable struct ExactMonotonicRiskRegion <: AbstractRiskRegion
+    β::Float64
+    surv::Function
+end
+
+function ∈(x::VecF64, Ω::ExactMonotonicRiskRegion)
+    if Ω.surv(x) < 1 - Ω.β
+        return true
+    else
+        return false
+    end
+end
+
 mutable struct MonotonicRiskRegion <: AbstractRiskRegion
     β::Float64
     nonrisk_frontier::LinkedList{VecF64}

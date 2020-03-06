@@ -11,7 +11,7 @@ using StatsFuns
 import Base: ∈, length
 import PDMats: dim
 
-export aggregate_scenarios, Cone, FiniteCone, PolyhedralCone, project, AbstractRiskRegion, EllipticalRiskRegion, MonotonicEllipticalRiskRegion, transformed_size, in_RiskRegion, aggregation_sampling, nonrisk_clustering, dim, cone_from_constraints, quota_cone, MonotonicRiskRegion, SurvivorApproximator
+export aggregate_scenarios, Cone, FiniteCone, PolyhedralCone, project, AbstractRiskRegion, EllipticalRiskRegion, MonotonicEllipticalRiskRegion, transformed_size, in_RiskRegion, aggregation_sampling, nonrisk_clustering, dim, cone_from_constraints, quota_cone, MonotonicRiskRegion, ExactMonotonicRiskRegion, SurvivorApproximator
 
 const VecF64 = Vector{Float64}
 const MatF64 = Matrix{Float64}
