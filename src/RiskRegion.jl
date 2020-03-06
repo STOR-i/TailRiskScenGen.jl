@@ -26,9 +26,9 @@ mutable struct EllipticalRiskRegion <: AbstractRiskRegion
     end
 end
 
-function EllipticalRiskRegion(μ::Distributions.ZeroVector, Σ::Matrix{Float64}, K::Cone, α::Float64)
-    EllipticalRiskRegion(zeros(μ.len), Σ, K, α)
-end
+# function EllipticalRiskRegion(μ::Distributions.ZeroVector, Σ::Matrix{Float64}, K::Cone, α::Float64)
+#     EllipticalRiskRegion(zeros(μ.len), Σ, K, α)
+# end
 EllipticalRiskRegion(dist::AbstractMvNormal, K::Cone, β::Float64) = EllipticalRiskRegion(dist.μ, dist.Σ.mat, K, quantile(Normal(), β))
 EllipticalRiskRegion(dist::Distributions.AbstractMvTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.μ, dist.Σ.mat, K, quantile(TDist(dist.df), β))
 # EllipticalRiskRegion(dist::MvSkewTDist, K::Cone, β::Float64) = EllipticalRiskRegion(dist.ξ, dist.Ω.mat, K, quantile(TDist(dist.df), β))
