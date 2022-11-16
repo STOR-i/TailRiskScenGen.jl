@@ -28,7 +28,7 @@ function nonrisk_clustering(dist::Sampleable{Multivariate, Continuous}, Ω::Abst
         scenarios[:, (num_risk+1):(num_risk+num_non_risk)] = cluster_results.centers
         probs = Array{Float64}(undef, num_risk + num_clusters)
         probs[1:r] .= 1.0/(r + nr)
-        probs[r+1:r + num_clusters] .= cluster_results.cweights/(r + nr)
+        probs[r+1:r + num_clusters] .= wcounts(cluster_results)/(r + nr)
     end
     return scenarios, probs
 end
@@ -58,7 +58,7 @@ function nonrisk_clustering(scenarios::Matrix{Float64}, Ω::AbstractRiskRegion, 
         new_scenarios = new_scenarios[:, 1:r + num_non_risk]
         new_probs = Array{Float64}(undef, r + num_non_risk)
         new_probs[1:r] = fill(1.0/(r + nr), r)
-        new_probs[r+1:r + num_non_risk] = cluster_results.cweights/(r + nr)
+        new_probs[r+1:r + num_non_risk] = wcounts(cluster_results)/(r + nr)
     else
         new_scenarios[:,(r+1):(r+nr)] = non_risk_scenarios
         # new_scenarios = pointer_to_array(pointer(new_scenarios), (dim, r + nr)) # Bug
